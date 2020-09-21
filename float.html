@@ -1,0 +1,20 @@
+<script>
+    var a = 0.1;
+    var b = 0.2;
+
+    const memory = new Float64Array(1);
+    memory[0] = a;
+
+    const intarr = new Uint8Array(memory.buffer);
+
+    /*for (let i = 0; i < 8; i++) {
+        let s = intarr[i].toString(2);
+        console.log(new Array(9 - s.length).join("0") + s)
+    }*/
+
+    // console.log(intarr)
+
+    `I said: "${ // 第一部分
+        s //第二部分
+    }"` // 第三部分
+</script>
