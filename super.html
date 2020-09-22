@@ -1,0 +1,28 @@
+<html>
+<script>
+    class Rectangle {
+        constructor() {
+            this.a = '1'
+        }
+        static logNbSides() {
+            return 'I have 4 sides';
+        }
+    }
+
+    class Square extends Rectangle {
+        constructor() {
+            super()
+            //console.log(super);//Uncaught SyntaxError
+            console.log(super.logNbSides, 'super')
+            console.log(super.logNbSides, 'a') // 此时super关键字无效
+        }
+        static logDescription() {
+            return super.logNbSides()
+        }
+    }
+    new Square()
+    console.log(Square.logDescription())
+
+</script>
+
+</html>
