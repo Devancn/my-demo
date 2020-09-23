@@ -1,0 +1,19 @@
+<script>
+    function sleep(t) {
+        return new Promise(resolve => setTimeout(resolve, t))
+    }
+    async function* foo() {
+        var i = 0;
+        while (true) {
+            yield i++;
+            await sleep(1000)
+        }
+    }
+
+    void async function () {
+        var g = foo();
+        for await (let e of g) {
+            console.log(e)
+        }
+    }();
+</script>
