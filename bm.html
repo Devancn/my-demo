@@ -1,0 +1,45 @@
+<script>
+  
+/**
+* @param {string} 模式串
+* @param {map} 根据模式串每个字符ascii生成一个map
+*/
+function generateBc(b = '',bc = new Map()) {
+  for (let i = 0; i < 256; ++i) {
+    bc.set(i, -1) // 初始化bc
+  }
+  for(let i = 0; i < b.length; ++i){
+    let ascii = String(b[i]).codePointAt(0);
+    if(!bc.has(ascii))
+    bc.set(ascii, i)
+  }
+}
+
+
+/**
+* @param {string} a 主串
+* @param {string} b 模式串
+*/
+function bm (a, b) {
+  const bc = new Map();
+  const n = a.length;
+  const m = b.length;
+  generateBc(b, bc);
+  let i = 0; // 主串与模式串对齐的第一个字符
+  while(i <= n - m) {
+    let j;
+    for(j = m - 1; j >= 0; --j) { // 模式串从后往前匹配
+      if(a[i + j] !== b[j]) break
+    }
+    if(j < 0) {
+      return i
+    } 
+    const key = String(a[i + j]).codePointAt(0);
+    i = i + (j - bc.get(key));
+  }
+  return -1;
+}
+const a = 'abcdefghijklmn';
+const b = 'ij'
+console.log(bm(a, b));
+</script>
