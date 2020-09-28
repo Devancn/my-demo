@@ -1,0 +1,25 @@
+<script>
+  let a = 6;
+  let b = 9;
+  function simpleTag(strings, aValExpression, bValExpression,sumExpression) {
+    console.log(strings);
+    console.log(aValExpression);
+    console.log(bValExpression);
+    console.log(sumExpression);
+    return 'foobar';
+  }
+  let untaggedResult = `${a} + ${b} = ${a + b}`;
+  let taggedResult = simpleTag`${a} + ${b} = ${a + b}`;//["","+",'= ','']
+  console.log(taggedResult);
+  function tagFunction(string, ...rest) {
+    console.log(arguments);
+  }
+  tagFunction`ab${1},f${2}${3}`;
+  tagFunction`${1}${2}`;
+  /*
+  总结：
+  1. 标签函数中的每个表达式可以看做把整个字符串切1刀
+  2. 标签函数中的第一个参数为一个数组，数组元素为每切一刀产生的多个字符串，如一个表达式相当于切一刀产生两个字符串，n个表达式切n刀，产生n+1个子字符串
+  3. 标签函数中除第一个参数外，后面剩余参数为每个表达式求值的字符串
+  */
+</script>
