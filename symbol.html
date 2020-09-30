@@ -22,4 +22,15 @@
   4. 可以使用Symbol.for在全局符号注册表中生成一个符号实例，后续使用相同符号字符串时会返回该符号实例，全局注册表中的符号必须使用字符串键来创建
   5. 可以使用Symbol.keyFor来查询全局注册表，接受符号返回符号对应的键
   */
+// =======================================================================================================================
+  class Baz extends Array{
+    // 如果该类Baz的实例被重新赋值（使用Array.prototype上的方法)，则会触发该get方法去改变重新赋值之后实例的构造方法
+    static get [Symbol.species]() {
+      return Array;
+    }
+  }
+  let baz = new Baz();
+  // baz = baz.concat('baz');
+  baz = baz.map(a => a +1)
+  console.log(baz instanceof Baz);
 </script>
