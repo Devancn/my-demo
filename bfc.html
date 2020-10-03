@@ -17,6 +17,8 @@ block inline-block
 总结： 包含正常流的都是bfc
 
 block-level 表示可以被放入bfc
-block-container 表示可以容纳bfc
+block-container 表示里面有正常流（block inline-block）
 block-box = block-level + block - container
 block-box 如果 overflow 是visible，那么久跟父bfc合并
+
+flex会产生多个bfc容器，每个容器包含正常流,所以flex子元素是多个block container
