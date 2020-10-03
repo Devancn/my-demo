@@ -15,3 +15,8 @@ block inline-block
 在同一个正常流(block-container)的main在垂直方向上会边距重叠，切以最大的main为准
 如果不想边距重叠，要让元素处于不同的block-container中
 总结： 包含正常流的都是bfc
+
+block-level 表示可以被放入bfc
+block-container 表示可以容纳bfc
+block-box = block-level + block - container
+block-box 如果 overflow 是visible，那么久跟父bfc合并
