@@ -1,0 +1,17 @@
+<div style="display: inline-flex">
+    <div style="display: flex; border:solid 1px blue;width:100px;height:100px;background-color: lightgreen;"></div>
+    <div style="border:solid 1px blue; width: 100px;height:100px;background-color: lightgreen;">bfc</div>
+    <div style="border:solid 1px blue; width: 100px;height:100px;background-color: lightgreen;">bfc</div>
+</div>
+
+flex inline-flex
+table inline-table
+grid inline-grid
+block inline-block
+
+
+属于block-box的有：flex、table、grid，因为里面产生多个block-container正常流
+属于block-container的只有block，里面都是按照正常流排版（从左到右、从上到下）
+在同一个正常流(block-container)的main在垂直方向上会边距重叠，切以最大的main为准
+如果不想边距重叠，要让元素处于不同的block-container中
+总结： 包含正常流的都是bfc
