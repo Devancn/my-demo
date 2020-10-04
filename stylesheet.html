@@ -1,0 +1,19 @@
+<style>
+    a {
+        color: red;
+    }
+</style>
+<body>
+    <a >abc</a>
+</body>
+<link rel="stylesheet" href="data:text/css,p%7Bcolor:blue%7D">
+
+<script>
+    // 通过CSSOM操作css rule 可以及时生效
+    const stylesheets = document.styleSheets;
+    stylesheets[0].cssRules[0].style.color="lightgreen";
+
+    // 获取真实元素计算之后的样式
+    // getComputedStyle, 第一个为想要获取的元素，第二个参数为伪元素(可选)
+    window.getComputedStyle(document.querySelector('a'))
+</script>
