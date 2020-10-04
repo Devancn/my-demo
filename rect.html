@@ -1,0 +1,27 @@
+<style>
+.x::before{
+    content: "哈哈";
+}
+</style>
+<body>
+    <div style="width: 100px;height: 400px;overflow: scroll;">
+        <span class="x">
+            文字文字文字文字文字文字文字文字文字文字文字文字文字文字
+            文字文字文字文字文字文字文字文字文字文字文字文字文字文字
+            文字文字文字文字文字文字文字文字文字文字文字文字文字文字
+            文字文字文字文字文字文字文字文字文字文字文字文字文字文字
+            文字文字文字文字文字文字文字文字文字文字文字文字文字文字
+            文字文字文字文字文字文字文字文字文字文字文字文字文字文字
+            文字文字文字文字文字文字文字文字文字文字文字文字文字文字
+            文字文字文字文字文字文字文字文字文字文字文字文字文字文字
+            文字文字文字文字文字文字文字文字文字文字文字文字文字文字
+            文字文字文字文字文字文字文字文字文字文字文字文字文字文字
+        </span>
+    </div>
+    <script>
+        // 1. 可以看到内联元素产生一个DOMRectList对应多个盒,在视口容器内产生换行，一行对应一个box
+        console.log(document.querySelector('.x').getClientRects())
+        // 2. 可以看到这个可以看到某个元素的几何位置
+        console.log(document.querySelector('.x').getBoundingClientRect());
+    </script>
+</body>
