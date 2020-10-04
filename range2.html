@@ -1,0 +1,12 @@
+<div id="a">123<span style="background-color:pink">456789</span>0123456789</div>
+
+<script>
+    let range = new Range();
+
+    // 起始位第一个文本节点的第三个位置开始
+    range.setStart(document.getElementById("a").childNodes[0], 3);
+    // 结束位置为第三个文本节点的第三个位置开始切到fragment
+    range.setEnd(document.getElementById("a").childNodes[2], 3);
+    // 切除到fragment中
+    console.log(range.extractContents())
+</script>
