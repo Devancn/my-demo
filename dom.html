@@ -1,0 +1,24 @@
+<div id="x">
+    <div>1</div>
+    <div>2</div>
+    <div>3</div>
+    <div>4</div>
+</div>
+
+<div id="b"></div>
+
+<script>
+    // children不包含文本节点
+    // childNodes包含文本节点
+    var x = document.getElementById("x");
+    var b = document.getElementById("b");
+    // 错误写法   结果有惊喜╰(*°▽°*)╯whyyyyyy*(x的children会实时变化的，意味着1和3元素追加到b的子元素内部时，会先在x容器内部remove掉 >liveing Collection )
+    // for (var i = 0; i < x.children.length; i++) {
+    //     b.appendChild(x.children[i]);
+    // }
+    // 正确写法
+    while (x.children.length) {
+        b.appendChild(x.children[0])
+    }
+
+</script>
