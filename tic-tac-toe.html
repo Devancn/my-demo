@@ -63,7 +63,16 @@
                 alert(color === 2 ? "X is winner!" : "O is winner!")
             }
             color = 3 - color;
-            show()
+            show();
+            /* willWin的逻辑是
+              当前棋子落子之后比如是X，
+              则克隆整个棋盘，遍历整个棋盘空白处，并继续落子X，如果check为true表示赢了，则
+              willWin为true 
+            */
+
+            if(willWin(pattern, color)) {
+                console.log(color === 2 ? "X will win!" : "O will win");
+            }
         }
 
         function check(pattern, color, x, y) {
@@ -117,6 +126,24 @@
                 }
                 if (win) {
                     return true
+                }
+            }
+            return false;
+        }
+
+        function clone(pattern) {
+            return JSON.parse(JSON.stringify(pattern));
+        }
+
+        function willWin(pattern, color) {
+            for (let i = 0; i < 3; i++) {
+                for (let j = 0; j < 3; j++) {
+                    if (pattern[i][j] !== 0) continue;// 跳过有棋子的情况
+                    let tmp = clone(pattern); // 克隆棋盘，在空白位置填充当前棋子来判断是否赢
+                    tmp[i][j] = color;
+                    if (check(tmp, color)) {
+                        return true;
+                    }
                 }
             }
             return false;
