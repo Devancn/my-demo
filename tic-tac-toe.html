@@ -34,12 +34,14 @@
     </div>
     <script>
         let pattern = [
-            [2, 0, 0],
+            [1, 2, 0],
             [0, 1, 0],
-            [0, 0, 0]
+            [1, 0, 2]
         ]
 
-        color = 1; // 1:O,2:X，O与X需要交叉落子，所以3 - color 就表示下次落的子
+        color = 2; // 1:O,2:X，O与X需要交叉落子，所以3 - color 就表示下次落的子
+        console.log(1, 'O');
+        console.log(2, 'X');
         function show() {
             const board = document.getElementById('board');
             board.innerHTML = "";
@@ -48,7 +50,7 @@
                 for (let j = 0; j < 3; j++) {
                     const cell = document.createElement("div");
                     cell.className = "cell";
-                    cell.innerText = pattern[i][j] == 2 ? "j" :
+                    cell.innerText = pattern[i][j] == 2 ? "X" :
                         pattern[i][j] === 1 ? "O" : "";
 
                     cell.addEventListener("click", () => move(i, j))
@@ -66,11 +68,10 @@
             show();
             /* willWin的逻辑是
               当前棋子落子之后比如是X，
-              则克隆整个棋盘，遍历整个棋盘空白处，并继续落子X，如果check为true表示赢了，则
-              willWin为true 
+              则克隆整个棋盘，遍历整个棋盘空白处，下一个落手的棋赢得了话，表示下一个下棋的人要赢了 
             */
 
-            if(willWin(pattern, color)) {
+            if (willWin(pattern, color)) {
                 console.log(color === 2 ? "X will win!" : "O will win");
             }
         }
@@ -142,11 +143,43 @@
                     let tmp = clone(pattern); // 克隆棋盘，在空白位置填充当前棋子来判断是否赢
                     tmp[i][j] = color;
                     if (check(tmp, color)) {
-                        return true;
+                        return [i, j]; // 返回willWin的点
                     }
                 }
             }
-            return false;
+            return null;
+        }
+
+        function bestChoice(pattern, color) {
+            let point = willWin(pattern, color);
+            if (point) {
+                return {
+                    point: point,
+                    result: 1 // -1： 输，0: 平 1：赢
+                }
+            }
+
+            let result = -1; // 假设自己会输
+            for (let i = 0; i < 3; i++) {
+                for (let j = 0; j < 3; j++) {
+                    if (pattern[i][j] !== 0) continue;
+                    let tmp = clone(pattern);
+                    tmp[i][j] = color;
+                    // 判断对手
+                    let opp = bestChoice(pattern, 3 - color);
+                    // opp对手willWin的结果
+                    // 自己与对手结果相反， 与对手结果相反就是自己的结果大于或等于result就是最好的选项
+                    if (- opp.result >= result) {
+                        point = [i, j];
+                        result = - opp.result;
+                    }
+                }
+            }
+
+            return {
+                point: point,
+                result: point ? result : 0
+            }
         }
 
         show();
