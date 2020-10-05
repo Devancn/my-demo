@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>tic-tac-toe</title>
+    <style>
+        #board {
+            width: 350px;
+        }
+
+        .cell {
+            width: 100px;
+            height: 100px;
+            background-color: green;
+            border: 1px solid #fff;
+            display: inline-block;
+            vertical-align: middle;
+
+            line-height: 100px;
+            font-size: 50px;
+            text-align: center;
+            color: red;
+            user-select: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="board">
+
+    </div>
+    <script>
+        let pattern = [
+            [2, 0, 0],
+            [0, 1, 0],
+            [0, 0, 0]
+        ]
+
+        color = 1; // 1:O,2:X，O与X需要交叉落子，所以3 - color 就表示下次落的子
+        function show() {
+            const board = document.getElementById('board');
+            board.innerHTML = "";
+
+            for (let i = 0; i < 3; i++) {
+                for (let j = 0; j < 3; j++) {
+                    const cell = document.createElement("div");
+                    cell.className = "cell";
+                    cell.innerText = pattern[i][j] == 2 ? "j" :
+                        pattern[i][j] === 1 ? "O" : "";
+
+                    cell.addEventListener("click", () => move(i, j))
+                    board.appendChild(cell)
+                }
+            }
+        }
+        function move(i, j) {
+            if (pattern[i][j] !== 0) return false;
+            pattern[i][j] = color;
+            if (check(pattern, color)) {
+                alert(color === 2 ? "X is winner!" : "O is winner!")
+            }
+            color = 3 - color;
+            show()
+        }
+
+        function check(pattern, color, x, y) {
+            // 判断横向是否都与color相等
+            for (let i = 0; i < 3; i++) {
+                let win = true;
+                for (let j = 0; j < 3; j++) {
+                    if (pattern[i][j] !== color) {
+                        win = false;
+                        break
+                    }
+                }
+                if (win) {
+                    return true
+                }
+            }
+            // 横轴轴有不与color相等则判断纵轴是否都与color相等
+            for (let i = 0; i < 3; i++) {
+                let win = true;
+                for (let j = 0; j < 3; j++) {
+                    if (pattern[j][i] !== color) {
+                        win = false;
+                        break
+                    }
+                }
+                if (win) {
+                    return true
+                }
+            }
+            // 横轴与纵轴斜边上相等情况,规律是 x = y
+            {
+                let win = true;
+                for (let i = 0; i < 3; i++) {
+                    if (pattern[i][i] !== color) {
+                        win = false;
+                        break
+                    }
+                }
+                if (win) {
+                    return true
+                }
+            }
+            // 另一个斜边规律是 x + y 等于2 等情况也就是（pattern[x][y]中的x + y = 2）
+            {
+                let win = true;
+                for (let i = 0; i < 3; i++) {
+                    if (pattern[i][2 - i] !== color) {
+                        win = false;
+                        break
+                    }
+                }
+                if (win) {
+                    return true
+                }
+            }
+            return false;
+        }
+
+        show();
+    </script>
+</body>
+
+</html>
