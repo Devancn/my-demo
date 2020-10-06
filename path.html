@@ -58,11 +58,15 @@
         let clear = false;
         document.addEventListener("mousedown", e => {
             mouse = true;
-            clear = e.which === 3; // 鼠标右键
+            clear = e.button === 2; // 鼠标右键
         });
         document.addEventListener("mouseup", () => mouse = false);
 
-        document.addEventListener("contextmenu", e => e.preventDefault())
+        document.addEventListener("contextmenu", e => e.preventDefault());
+
+        function path(map, start, end) {
+
+        }
     </script>
 </body>
 
