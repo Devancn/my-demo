@@ -153,18 +153,24 @@
             }
         }
 
-        function co(iterator) {
+        function run(iterator) {
             let { value, done } = iterator.next();
             if (done) {
                 return
             }
             if (value instanceof Promise) {
                 value.then(() => {
-                    co(iterator)
+                    run(iterator)
                 })
             }
         }
-        co(go());
+        function co(generator) {
+            return function () {
+                return run(generator());
+            }
+
+        }
+         go = co(go);
     </script>
 </body>
 
