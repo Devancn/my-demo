@@ -57,26 +57,27 @@
             }
         }
 
-        function go() {
-            /*
-                第一种
-                green()
-                setTimeout(yellow, 1000);
-                setTimeout(red, 1200)
-                setTimeout(go, 1700)
-            */
-            /*
-                第二种
-                green()
-                setTimeout(function () {
-                    yellow()
-                    setTimeout(function () {
-                        red()
-                        setTimeout(go, 500)
-                    }, 200)
-                }, 1000)
-            */
-        }
+        /*function go() {
+          
+               第一种
+               green()
+               setTimeout(yellow, 1000);
+               setTimeout(red, 1200)
+               setTimeout(go, 1700)
+           
+          
+               第二种
+               green()
+               setTimeout(function () {
+                   yellow()
+                   setTimeout(function () {
+                       red()
+                       setTimeout(go, 500)
+                   }, 200)
+               }, 1000)
+           
+       }
+       */
         /*
         第三种
         function sleep(t) {
@@ -95,7 +96,7 @@
             }).then(go)
         }
         */
-        function sleep(t) {
+        /*function sleep(t) {
             return new Promise((resolve, reject) => {
                 setTimeout(resolve, t);
             })
@@ -104,7 +105,7 @@
             return new Promise((resolve, reject) => {
                 element.addEventListener(eventName, resolve, { once: true })
             })
-        }
+        }*/
         /* 第四种
         async function go() {
             // green();
@@ -123,7 +124,7 @@
                 await sleep(500);
             }
         }*/
-        async function go() {
+        /*async function go() {
             while (true) {
                 green();
                 await happen(document.getElementById('next'), 'click');
@@ -132,7 +133,38 @@
                 red();
                 await happen(document.getElementById('next'), 'click');
             }
+        }*/
+        /*
+            第五种
+        */
+        function sleep(t) {
+            return new Promise((resolve, reject) => {
+                setTimeout(resolve, t);
+            })
         }
+        function* go() {
+            while (true) {
+                green();
+                yield sleep(1000);
+                yellow()
+                yield sleep(200);
+                red()
+                yield sleep(500);
+            }
+        }
+
+        function co(iterator) {
+            let { value, done } = iterator.next();
+            if (done) {
+                return
+            }
+            if (value instanceof Promise) {
+                value.then(() => {
+                    co(iterator)
+                })
+            }
+        }
+        co(go());
     </script>
 </body>
 
