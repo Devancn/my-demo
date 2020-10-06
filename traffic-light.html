@@ -76,6 +76,8 @@
                 }, 1000)
             */
         }
+        /*
+        第三种
         function sleep(t) {
             return new Promise((resolve, reject) => {
                 setTimeout(resolve, t);
@@ -91,7 +93,29 @@
                 return sleep(500)
             }).then(go)
         }
-
+        */
+        function sleep(t) {
+            return new Promise((resolve, reject) => {
+                setTimeout(resolve, t);
+            })
+        }
+        async function go() {
+            // green();
+            // await sleep(1000);
+            // yellow();
+            // await sleep(200);
+            // red();
+            // await sleep(500);
+            // go();
+            while (true) {
+                green();
+                await sleep(1000);
+                yellow();
+                await sleep(200);
+                red();
+                await sleep(500);
+            }
+        }
     </script>
 </body>
 
