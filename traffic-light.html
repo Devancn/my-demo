@@ -55,6 +55,28 @@
                 document.getElementsByClassName("yellow")[0].classList.add("light");
             }
         }
+
+        function go() {
+            /*
+                第一种
+                green()
+                setTimeout(yellow, 1000);
+                setTimeout(red, 1200)
+                setTimeout(go, 1700)
+            */
+            /*
+                第二种
+            */
+            green()
+            setTimeout(function () {
+                yellow()
+                setTimeout(function () {
+                    red()
+                    setTimeout(go, 500)
+                }, 200)
+            }, 1000)
+
+        }
     </script>
 </body>
 
