@@ -136,7 +136,7 @@
         }*/
         /*
             第五种
-        */
+       
         function sleep(t) {
             return new Promise((resolve, reject) => {
                 setTimeout(resolve, t);
@@ -171,6 +171,22 @@
 
         }
          go = co(go);
+          */
+        function sleep(t) {
+            return new Promise((resolve, reject) => {
+                setTimeout(resolve, t);
+            })
+        }
+        async function* g() {
+            let i = 0;
+            while (true) {
+                await sleep(1000);
+                yield i++;
+            }
+        }
+        for await (let v of g()) {
+            console.log(v);
+        }
     </script>
 </body>
 
