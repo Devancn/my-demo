@@ -73,9 +73,9 @@
 
         async function fintPath(map, start, end) {
             map = map.slice();
-            let stack = [start];
+            let queue = [start];
 
-            async function insert(x, y) {
+            async function insert([x, y], pre) {
                 if (map[100 * y + x] !== 0) { // 表示改点有障碍，为1
                     return
                 }
@@ -83,23 +83,29 @@
                     return;
                 }
 
-                map[100 * y + x] = 2; // 把改点标记为已经在queue中push过的点
+                map[100 * y + x] = pre; // 把改点标记为已经在queue中push过的点,只要不等于0和1就行
                 container.children[y * 100 + x].style.backgroundColor = "lightgreen"; // 并且把对应的点的颜色设置成绿色
                 await sleep(5); // 暂停5ms可视化找终点过程
-                stack.push([x, y]);
+                queue.push([x, y]);
             }
 
-            while (stack.length) {
-                let [x, y] = stack.pop();
-                if (x === end[0] && y === end[1]) { // 如果等于终点
-                    return true
+            while (queue.length) {
+                let [x, y] = queue.shift();
+                if (x === end[0] && y === end[1]) { // 如果找到终点
+                    let path = [];
+                    while (x !== start[0] || y !== start[1]) { // 终点不为起点时（终点与起点相同情况）
+                        path.push([x, y])
+                        container.children[y * 100 + x].style.backgroundColor = "pink";
+                        [x, y] = map[y * 100 + x]; //把之前的pre取出来赋值给 x 和 y,直到x 和y等于起点
+                    }
+                    return path
                 }
-                await insert(x - 1, y); // 左
-                await insert(x + 1, y); // 右 
-                await insert(x, y - 1); // 上
-                await insert(1, y + 1); // 下
+                await insert([x - 1, y], [x, y]); // 左
+                await insert([x + 1, y], [x, y]); // 右 
+                await insert([x, y - 1], [x, y]); // 上
+                await insert([1, y + 1], [x, y]); // 下
             }
-            return false
+            return null
         }
     </script>
 </body>
