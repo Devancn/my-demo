@@ -39,7 +39,7 @@
                 let min = this.data[0];
                 let minIndex = 0;
                 for (let i = 1; i < this.data.length; i++) {
-                    if (this.compare(this.data[i], min) > 0) {
+                    if (this.compare(this.data[i], min) < 0) {
                         min = this.data[i];
                         minIndex = i;
                     }
@@ -52,6 +52,9 @@
             }
             insert(v) {
                 this.data.push(v)
+            }
+            get length() {
+                return this.data.length;
             }
         }
 
@@ -97,9 +100,19 @@
             })
         }
 
+
         async function fintPath(map, start, end) {
             map = map.slice();
-            let queue = [start];
+
+            function distance([x, y]) {
+                return (x - end[0]) ** 2 + (y - end[1]) ** 2
+            }
+            // collection存储所有已经insert的点，并根据每个点与终点的距离进行排序，
+            // 每次排序找出最近的一个点
+            let collection = new Sorted([start], (a, b) => {
+                return distance(a) - distance(b);
+            });
+            console.log(collection);
 
             // 显示起点
             container.children[start[1] * 100 + start[0]].style.backgroundColor = "green";
@@ -117,11 +130,11 @@
                 map[100 * y + x] = pre; // 把改点标记为已经在queue中push过的点,只要不等于0和1就行
                 container.children[y * 100 + x].style.backgroundColor = "lightgreen"; // 并且把对应的点的颜色设置成绿色
                 await sleep(5); // 暂停5ms可视化找终点过程
-                queue.push([x, y]);
+                collection.insert([x, y]);
             }
 
-            while (queue.length) {
-                let [x, y] = queue.shift();
+            while (collection.length) {
+                let [x, y] = collection.take();
                 if (x === end[0] && y === end[1]) { // 如果找到终点
                     let path = [];
                     while (x !== start[0] || y !== start[1]) { // 终点不为起点时（终点与起点相同情况）
@@ -131,6 +144,7 @@
                     }
                     return path
                 }
+                // 基于 [x,y] 点坐标上插入能从改点扩散相连的点坐标
                 await insert([x - 1, y], [x, y]); // 左
                 await insert([x + 1, y], [x, y]); // 右 
                 await insert([x, y - 1], [x, y]); // 上
