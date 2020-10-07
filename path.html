@@ -29,6 +29,32 @@
     <div id="container"></div>
     <button onclick="localStorage.map = JSON.stringify(map)">save</button>
     <script>
+        class Sorted {
+            constructor(data, compare) {
+                this.data = data;
+                this.compare = compare;
+            }
+            take() {
+                if (!this.data.length) return;
+                let min = this.data[0];
+                let minIndex = 0;
+                for (let i = 1; i < this.data.length; i++) {
+                    if (this.compare(this.data[i], min) > 0) {
+                        min = this.data[i];
+                        minIndex = i;
+                    }
+                }
+                // 找到最小的那个元素后把当前数组最后一个元素赋值给当前数组中最小元素的位置，
+                // 然后把数组的最后一项pop掉，相当于找到最小元素后，把最小元素从当前数组中取出，并把数组最后一个元素填充当前位置（对数组操作最小，不然删除掉当前最小元素后，该元素后面的下表都会跟着变）
+                this.data[minIndex] = this.data[this.data.length - 1];
+                this.data.pop();
+                return min;
+            }
+            insert(v) {
+                this.data.push(v)
+            }
+        }
+
         // var map = new Array(1001).join(0).split('').map(s => Number(s));
         var map = localStorage.map ? JSON.parse(localStorage.map) : new Array(10000).fill(0);
         const container = document.getElementById("container");
@@ -74,6 +100,11 @@
         async function fintPath(map, start, end) {
             map = map.slice();
             let queue = [start];
+
+            // 显示起点
+            container.children[start[1] * 100 + start[0]].style.backgroundColor = "green";
+            // 显示终点
+            container.children[end[1] * 100 + end[0]].style.backgroundColor = "red";
 
             async function insert([x, y], pre) {
                 if (map[100 * y + x] !== 0) { // 表示改点有障碍，为1
