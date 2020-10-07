@@ -73,7 +73,7 @@
 
         async function fintPath(map, start, end) {
             map = map.slice();
-            let queue = [start];
+            let stack = [start];
 
             async function insert(x, y) {
                 if (map[100 * y + x] !== 0) { // 表示改点有障碍，为1
@@ -86,11 +86,11 @@
                 map[100 * y + x] = 2; // 把改点标记为已经在queue中push过的点
                 container.children[y * 100 + x].style.backgroundColor = "lightgreen"; // 并且把对应的点的颜色设置成绿色
                 await sleep(5); // 暂停5ms可视化找终点过程
-                queue.push([x, y]);
+                stack.push([x, y]);
             }
 
-            while (queue.length) {
-                let [x, y] = queue.shift();
+            while (stack.length) {
+                let [x, y] = stack.pop();
                 if (x === end[0] && y === end[1]) { // 如果等于终点
                     return true
                 }
