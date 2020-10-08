@@ -1,0 +1,30 @@
+<script>
+    class Trie {
+        constructor() {
+            this.root = Object.create(null);
+        }
+        insert(word) {
+            let node = this.root;
+            for (let c of word) {
+                if (!node[c]) {
+                    node[c] = Object.create(null)
+                }
+                node = node[c];
+            }
+            // $ 表示标记结束的字符
+            if ("$" in node) {
+                node['$'] = 0;
+            }
+            node['$']++;
+        }
+    }
+
+    // 随机生成length位a-z之间的字符串
+    function randomWord(length) {
+        let s = "";
+        for (let i = 0; i < length; i++) {
+            s += String.fromCharCode(Math.floor(Math.random() * 26 + 'a'.charCodeAt(0)));
+        }
+        return s;
+    }
+</script>
