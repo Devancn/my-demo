@@ -12,10 +12,25 @@
                 node = node[c];
             }
             // $ 表示标记结束的字符
-            if ("$" in node) {
+            if (!("$" in node)) {
                 node['$'] = 0;
             }
             node['$']++;
+        }
+        most() {
+            let max = 0;
+            let maxWorld = null;
+            let visit = (node, world) => {
+                if (node.$ && node.$ > max) {
+                    max = node.$;
+                    maxWorld = world;
+                }
+                for (let p in node) {
+                    visit(node[p], world + p);
+                }
+            }
+            visit(this.root, "");
+            console.log(maxWorld);
         }
     }
 
@@ -26,5 +41,11 @@
             s += String.fromCharCode(Math.floor(Math.random() * 26 + 'a'.charCodeAt(0)));
         }
         return s;
+    }
+
+    let trie = new Trie();
+
+    for (let i = 0; i < 10000; i++) {
+        trie.insert(randomWord(4));
     }
 </script>
