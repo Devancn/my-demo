@@ -10,7 +10,7 @@
     }
 
     function reactive(object) {
-        if (reactivities.has(object)) {
+        if (reactivities.has(object)) { // 这里处理多个属性层级访问情况
             return reactivities.get(object);
         }
         let proxy = new Proxy(object, {
@@ -35,6 +35,8 @@
             }
         })
         reactivities.set(object, proxy);
+        reactivities.set(proxy, proxy);
+
         return proxy;
     }
 
