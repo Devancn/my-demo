@@ -1,16 +1,24 @@
 <script>
     let handlers = new Map();
+    let reactivities = new Map();
+
     let usedReactivities = [];
 
-    let obj = {
-        a: 1,
+    let object = {
+        a: { x: 3 },
         b: 2
     }
 
     function reactive(object) {
-        return new Proxy(object, {
+        if (reactivities.has(object)) {
+            return reactivities.get(object);
+        }
+        let proxy = new Proxy(object, {
             get(obj, prop) {
                 usedReactivities.push([obj, prop]);
+                if (typeof obj[prop] === "object") {
+                    return reactive(obj[prop])
+                }
                 return obj[prop];
             },
             set(obj, prop, val) {
@@ -26,6 +34,8 @@
                 return obj[prop];
             }
         })
+        reactivities.set(object, proxy);
+        return proxy;
     }
 
     function effect(handler) {
@@ -43,13 +53,15 @@
         }
     }
 
-    let dummy;
+    let v;
 
-    let proxy = reactive(obj);
+    let p = reactive(object);
 
-    effect(() => dummy = proxy.a);
-    console.log(dummy);
-    proxy.a = 2;
-    console.log(dummy);
+    effect(() => v = p.a.x);
+    console.log(v);
+
+    p.a = { x: 4 }
+
+    console.log(v);
 
 </script>
