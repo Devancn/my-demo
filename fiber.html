@@ -28,6 +28,7 @@
   
       walk(root)
   */
+
     let A1 = { type: 'div', key: 'A1' };
     let B1 = { type: 'div', key: 'B1', return: A1 }
     let B2 = { type: 'div', key: 'B2', return: A1 }
@@ -44,12 +45,25 @@
     // 从A1开始遍历整棵树
 
     let nextUnitOfWork = null; //下一个执行单元
-    function workLoop() {
-        while (nextUnitOfWork) { // 如果有待执行的执行单元就执行，返回下一个可执行单元
+    let startTime = 0;
+    let t = Date.now();
+    function workLoop(timestamp) {
+        console.log(Date.now() - t , 'ms')
+        console.log(timestamp, 'remaining');
+        startTime = timestamp;
+        // while (nextUnitOfWork) { // 如果有待执行的执行单元就执行，返回下一个可执行单元
+        //     nextUnitOfWork = performUnitOfWork(nextUnitOfWork);
+        // }
+        while (timestamp > 10 && nextUnitOfWork) { // 假设16ms绘制一帧还大于1ms时且还有下个单元要执行则执行下个单元
             nextUnitOfWork = performUnitOfWork(nextUnitOfWork);
         }
         if (!nextUnitOfWork) {
             console.log(`render阶段结束！`)
+        } else {
+            console.log('---------------------------------------------')
+            // 此时还有下个可执行单元但前剩余执行时间片不够
+            // 则执行requestAnimationFrame让浏览器重绘执行先执行workloop任务
+            requestAnimationFrame(workLoop, { timeout: 1000 })
         }
     }
     /*
@@ -62,7 +76,6 @@
         if (fiber.child) { // 有直接子fiber则返回子fiber
             return fiber.child
         }
-        console.log(fiber, 'fiber')
         // 没有子fiber则当前fiber节点已经完成
         while (fiber) {
             completeUnitOfWork(fiber);//让fiber节点完成操作
@@ -78,8 +91,17 @@
     }
 
     function beginWork(fiber) {
+        let start = (startTime / 6) + 4;
+
+        console.log(start, 'start')
+        console.log(start * 6, 'count')
+        sleep(Date.now(), start)
         console.log("开始", fiber.key);
     }
     nextUnitOfWork = A1;
-    workLoop();
+    requestAnimationFrame(workLoop, { timeout: 1000 })
+
+    function sleep(startTime, delay) { // 阻塞当前线程时间
+        while (Date.now() - startTime < delay) { }
+    }
 </script>
