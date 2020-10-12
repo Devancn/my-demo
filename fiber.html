@@ -1,0 +1,30 @@
+<script>
+    let root = {
+        key: 'A1',
+        children: [
+            {
+                key: 'B1',
+                children: [
+                    { key: 'c1', children: [] },
+                    { key: 'c2', children: [] }
+                ]
+            },
+            {
+                key: 'B2', children: []
+            }
+        ]
+    }
+
+    function walk(vdom) {
+        doWork(vdom);
+        vdom.children.forEach(child => {
+            walk(child)
+        })
+    }
+
+    function doWork(vdom) {
+        console.log(vdom.key);
+    }
+
+    walk(root)
+</script>
