@@ -47,14 +47,12 @@
     let nextUnitOfWork = null; //下一个执行单元
     let startTime = 0;
     let t = Date.now();
-    function workLoop(timestamp) {
-        console.log(Date.now() - t , 'ms')
-        console.log(timestamp, 'remaining');
-        startTime = timestamp;
+    function workLoop(deadline) {
+        startTime = deadline.timeRemaining();
         // while (nextUnitOfWork) { // 如果有待执行的执行单元就执行，返回下一个可执行单元
         //     nextUnitOfWork = performUnitOfWork(nextUnitOfWork);
         // }
-        while (timestamp > 10 && nextUnitOfWork) { // 假设16ms绘制一帧还大于1ms时且还有下个单元要执行则执行下个单元
+        while (startTime > 10 && nextUnitOfWork) { // 假设16ms绘制一帧还大于1ms时且还有下个单元要执行则执行下个单元
             nextUnitOfWork = performUnitOfWork(nextUnitOfWork);
         }
         if (!nextUnitOfWork) {
@@ -63,7 +61,7 @@
             console.log('---------------------------------------------')
             // 此时还有下个可执行单元但前剩余执行时间片不够
             // 则执行requestAnimationFrame让浏览器重绘执行先执行workloop任务
-            requestAnimationFrame(workLoop, { timeout: 1000 })
+            requestIdleCallback(workLoop, { timeout: 1000 })
         }
     }
     /*
@@ -99,7 +97,7 @@
         console.log("开始", fiber.key);
     }
     nextUnitOfWork = A1;
-    requestAnimationFrame(workLoop, { timeout: 1000 })
+    requestIdleCallback(workLoop, { timeout: 1000 })
 
     function sleep(startTime, delay) { // 阻塞当前线程时间
         while (Date.now() - startTime < delay) { }
