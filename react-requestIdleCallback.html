@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    let channel = new MessageChannel(); // 通信是产生宏任务
+    let activeFrameTime = 1000 / 60; // 模拟渲染一帧所需时间
+    let frameDeadline; // 帧截止时间
+    let pendingCallback;
+    let timeRemaining = () => frameDeadline - performance.now();
+    channel.port2.onmessage = function() {
+      let currentTime = performance.now(); // 浏览器导航之后到现在还的时间
+      let didTimeout = frameDeadline <= currentTime;
+      if(didTimeout || timeRemaining() > 0) {
+        if(pendingCallback) {
+          pendingCallback({didTimeout, timeRemaining})
+        }
+      }
+    }
+
+    window.requestIdleCallback = function(callback, options) {
+      requestAnimationFrame(rafTime => {
+        console.log('rafTIme', rafTime); // 执行该回调的时间
+        frameDeadline = rafTime + activeFrameTime;
+        pendingCallback = callback;
+        channel.port1.postMessage('hello');
+      })
+    }
+  </script>
+</body>
+</html>
