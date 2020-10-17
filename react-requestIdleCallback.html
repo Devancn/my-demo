@@ -15,7 +15,7 @@
     channel.port2.onmessage = function() {
       let currentTime = performance.now(); // 浏览器导航之后到现在还的时间
       let didTimeout = frameDeadline <= currentTime;
-      if(didTimeout || timeRemaining() > 0) {
+      if(didTimeout || timeRemaining() > 0) { 
         if(pendingCallback) {
           pendingCallback({didTimeout, timeRemaining})
         }
@@ -24,7 +24,7 @@
 
     window.requestIdleCallback = function(callback, options) {
       requestAnimationFrame(rafTime => {
-        console.log('rafTIme', rafTime); // 执行该回调的时间
+        console.log('rafTIme', rafTime); // 执行该回调的时间(这个值与performance.now()返回值相同)
         frameDeadline = rafTime + activeFrameTime;
         pendingCallback = callback;
         channel.port1.postMessage('hello');
