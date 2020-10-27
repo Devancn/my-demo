@@ -1,0 +1,105 @@
+<script>
+    /* let root = {
+          key: 'A1',
+          children: [
+              {
+                  key: 'B1',
+                  children: [
+                      { key: 'c1', children: [] },
+                      { key: 'c2', children: [] }
+                  ]
+              },
+              {
+                  key: 'B2', children: []
+              }
+          ]
+      }
+  
+      function walk(vdom) {
+          doWork(vdom);
+          vdom.children.forEach(child => {
+              walk(child)
+          })
+      }
+  
+      function doWork(vdom) {
+          console.log(vdom.key);
+      }
+  
+      walk(root)
+  */
+
+    let A1 = { type: 'div', key: 'A1' };
+    let B1 = { type: 'div', key: 'B1', return: A1 }
+    let B2 = { type: 'div', key: 'B2', return: A1 }
+    let B3 = { type: 'div', key: 'B3', return: A1 }
+    let C1 = { type: 'div', key: 'C1', return: B1 }
+    let C2 = { type: 'div', key: 'C2', return: B1 }
+
+    A1.child = B1; // A1的直接子元素指向B1
+    B1.sibling = B2; // B1的兄弟元素指向B2
+    B2.sibling = B3; // B2的兄弟元素指向B3
+    B1.child = C1; // B1的直接子元素指向C1
+    C1.sibling = C2; // C1的兄弟元素指向C2
+
+    // 从A1开始遍历整棵树
+
+    let nextUnitOfWork = null; //下一个执行单元
+    let startTime = 0;
+    let t = Date.now();
+    function workLoop(deadline) {
+        startTime = deadline.timeRemaining();
+        // while (nextUnitOfWork) { // 如果有待执行的执行单元就执行，返回下一个可执行单元
+        //     nextUnitOfWork = performUnitOfWork(nextUnitOfWork);
+        // }
+        while (startTime > 10 && nextUnitOfWork) { // 假设16ms绘制一帧还大于1ms时且还有下个单元要执行则执行下个单元
+            nextUnitOfWork = performUnitOfWork(nextUnitOfWork);
+        }
+        if (!nextUnitOfWork) {
+            console.log(`render阶段结束！`)
+        } else {
+            console.log('---------------------------------------------')
+            // 此时还有下个可执行单元但前剩余执行时间片不够
+            // 则执行requestAnimationFrame让浏览器重绘执行先执行workloop任务
+            requestIdleCallback(workLoop, { timeout: 1000 })
+        }
+    }
+    /*
+        规则
+        1: 如果没有child fiber，则完成当前fiber
+        2: 如果没有sibling fiber则完成当前fiber的父fiber 
+    */
+    function performUnitOfWork(fiber) {
+        beginWork(fiber);// 处理当前fiber
+        if (fiber.child) { // 有直接子fiber则返回子fiber
+            return fiber.child
+        }
+        // 没有子fiber则当前fiber节点已经完成
+        while (fiber) {
+            completeUnitOfWork(fiber);//让fiber节点完成操作
+            if (fiber.sibling) { // 如果当前fiber节点有兄弟fiber则返回兄弟fiber
+                return fiber.sibling;
+            }
+            fiber = fiber.return; // 没有兄弟节点时，fiber等于当前fiber.return（父fiber）值
+        }
+    }
+
+    function completeUnitOfWork(fiber) {
+        console.log("结束", fiber.key)
+    }
+
+    function beginWork(fiber) {
+        let start = (startTime / 6) + 4;
+
+        console.log(start, 'start')
+        console.log(start * 6, 'count')
+        sleep(Date.now(), start)
+        console.log("开始", fiber.key);
+    }
+    nextUnitOfWork = A1;
+    requestIdleCallback(workLoop, { timeout: 1000 })
+
+    function sleep(startTime, delay) { // 阻塞当前线程时间
+        while (Date.now() - startTime < delay) { }
+    }
+</script>

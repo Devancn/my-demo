@@ -1,0 +1,68 @@
+<div id="a">
+    <span>1</span>
+    <p>2</p>
+    <a>3</a>
+    <div>4</div>
+</div>
+
+<script>
+
+    let element = document.getElementById("a");
+
+    // 对dom元素进行逆序
+
+
+    /*function reverseChildren(element) {
+        let fragment = document.createDocumentFragment();
+        while (element.children.length) {
+            fragment.appendChild(element.lastElementChild)
+        }
+        element.appendChild(fragment)
+
+
+    }*/
+
+    // 第二种
+    /* function reverseChildren(element) {
+         var l = element.childNodes.length;
+         while(l -- > 0) {
+             element.appendChild(element.childNodes[l])
+         }
+     }
+     setTimeout(() => {
+         reverseChildren(element);
+     }, 1000)
+     */
+    /*
+    Range API
+    创建range第一种方式： new Range()
+    range.setStart
+    range.setEnd
+    创建第二种方式
+    range = document.getSelection().getRangeAt(0)
+
+    range.setStartBefore
+    range.setEndBefore
+    range.setStartAfter
+    range.setEndAfter
+    range.selectNode
+    range.selectNodeContents
+    */
+
+    // Range API 实现reverse,这样不会产生第一种实现方式重排
+
+    function reverseChildren(element) {
+        let range = new Range();
+        range.selectNodeContents(element);;
+        let fragment = range.extractContents();
+        let l = fragment.childNodes.length;
+        while (l-- > 0) {
+            fragment.appendChild(fragment.childNodes[l])
+        }
+        element.appendChild(fragment);
+    }
+
+    setTimeout(() => {
+        reverseChildren(element)
+    }, 1000)
+</script>

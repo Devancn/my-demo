@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    function sleep(duration) {
+      let start = Date.now();
+      while(start + duration > Date.now()){}
+    }
+
+    const works = [
+      () => {
+        console.log('A1开始');
+        console.log('A1结束');
+      },
+      () => {
+        console.log('B1开始');
+        console.log('B1结束');
+      },
+      () => {
+        console.log('C1开始');
+        console.log('C1结束');
+      },
+      () => {
+        console.log('C2开始');
+        console.log('C2结束');
+      },
+      () => {
+        console.log('B2开始');
+        console.log('B2结束');
+      }
+    ]
+
+    requestIdleCallback(workLoop);
+
+    function workLoop(deadline) {
+      console.log('本帧的剩余时间', deadline.timeRemaining());
+      while(deadline.timeRemaining() > 0 && works.length) {
+        performUnitOfWork()
+      }
+    }
+
+    function performUnitOfWork() {
+      works.shift()();// 取出任务执行
+    }
+  </script>
+</body>
+</html>
