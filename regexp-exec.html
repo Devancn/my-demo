@@ -1,0 +1,9 @@
+<script>
+  const regexp = /ab*/g;
+  const string = 'abbcdefabh';
+  let result;
+  while(result = regexp.exec(string)) {
+    console.log(regexp.lastIndex);
+    console.log(result);
+  }
+</script>
