@@ -1,0 +1,18 @@
+<script>
+  /**
+   * 把target插入到已经排好序的array数组中
+   * */
+  function insert(array = [], target) {
+    // 数组从后往前依次遍历，如果遍历的元素比target的元素大则遍历的元素往后挪一个位置
+    let p = array.length - 1;
+    while(array[p] > target && p >= 0) {
+      array[p + 1] = array[p];
+      p--
+    }
+    array[p + 1] = target;
+    return -1;
+  }
+let array = [1,3,5,10,15,50];
+insert(array, 9);
+console.log(array, 'array');
+</script>
