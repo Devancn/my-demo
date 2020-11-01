@@ -21,8 +21,28 @@ function merge(array = [],start, middle, end) {
     A[k] = A1[i] < A2[j] ? A1[i++] : A2[j++];    
   }
 }
-const A =  [1,4,6, 2,5,7];
 
-merge(A,0,Math.floor(A.length/ 2),A.length);
+// 归并排序执行过程
+// 1. 将原数组不断拆分，直到长度为1
+// 2. 不断将已排序数据合并直到再次合并成原数组
+// start与end 表示数组的索引
+// 把一个数组分为左半部分与右半部分
+// 直到数组只有一个元素位置
+// 递归终止条件
+function mergeSort(array, start, end) {
+  if(end - start < 2) return;
+  const middle = Math.ceil((start + end) / 2);
+  // 左半部分
+  mergeSort(array,start, middle);
+  // 右半部分
+  mergeSort(array,middle,end);
+  // 数组进行合并
+  merge(array,start,middle,end);
+}
+const A =  [38,27,43,3,9,82,10];
+
+mergeSort(A,0,A.length);
 console.log(A);
+
+
 </script>
