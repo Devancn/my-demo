@@ -1,0 +1,25 @@
+<script>
+  /**
+   * 把target插入到已经排好序的array数组中
+   * */
+  function insert(array = [],i, target) {
+    // i -1 之前的位置表示已排序
+    let p = i - 1;
+    while(array[p] > target && p >= 0) {
+      array[p + 1] = array[p];
+      p--
+    }
+    array[p + 1] = target;
+  }
+
+
+  function insertionSort(array){
+    // 默认数组第一项已经排好序
+    for(let i = 1; i < array.length; i++) {
+      insert(array,i,array[i])
+    }
+  }
+let array = [1,3,5,23,10,15,50];
+insertionSort(array);
+console.log(array, 'array');
+</script>

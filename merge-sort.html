@@ -1,0 +1,48 @@
+<script>
+
+// 这里要求start到middle之前的元素必须已经是有序
+// middle到end之间的元素必须是有序
+// 如 [1,4,6, 2,5,7]
+function merge(array = [],start, middle, end) {
+  // 此时原array中的元素已经被分配到A1,A2中
+  // 把array数组从中间切成两半，分别存放到A1,A2数组中
+  let A1 = array.slice(start, middle); 
+  let A2 = array.slice(middle, end);
+  // 追加哨兵，任何数与他比较都是false
+  // 这种只有表示某个（A1,A2）已经遍历到尾部了，另一个数组中的元素与他比较
+  //都会返回false,就会把另个元素copy到array中
+  // 还有另一种技巧把另外一个元素的剩余元素直接按顺序copy到array中
+  A1.push(Number.MAX_SAFE_INTEGER);
+  A2.push(Number.MAX_SAFE_INTEGER);
+  // K表示将往array中写入元素的索引
+  // i表示在A1数组中将要把索引为i的元素copy到数组array中
+  // j表示在A2数组中将要把索引为j的元素copy到数组array中
+  for(let k = start, i = 0, j = 0; k < end; k++) {
+    A[k] = A1[i] < A2[j] ? A1[i++] : A2[j++];    
+  }
+}
+
+// 归并排序执行过程
+// 1. 将原数组不断拆分，直到长度为1
+// 2. 不断将已排序数据合并直到再次合并成原数组
+// start与end 表示数组的索引
+// 把一个数组分为左半部分与右半部分
+// 直到数组只有一个元素位置
+// 递归终止条件
+function mergeSort(array, start, end) {
+  if(end - start < 2) return;
+  const middle = Math.ceil((start + end) / 2);
+  // 左半部分
+  mergeSort(array,start, middle);
+  // 右半部分
+  mergeSort(array,middle,end);
+  // 数组进行合并
+  merge(array,start,middle,end);
+}
+const A =  [38,27,43,3,9,82,10];
+
+mergeSort(A,0,A.length);
+console.log(A);
+
+
+</script>
