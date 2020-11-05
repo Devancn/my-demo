@@ -1,0 +1,23 @@
+<script>
+  function* nTimes(n) {
+    debugger
+    if(n > 0) {
+      yield* nTimes(n -1);
+      yield n - 1;
+    }
+  }
+  // for(const x of nTimes(3)){
+  //   console.log(x);
+  // // }
+  // const iterator = nTimes(3);
+  // console.log(iterator.next());
+
+  function* test() {
+    yield {next() {
+      return {value: 1, done: true}
+    }}
+  }
+  var t = test()
+  console.log(t)
+  console.log(typeof nTimes())
+</script>
