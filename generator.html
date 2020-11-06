@@ -1,6 +1,5 @@
 <script>
   function* nTimes(n) {
-    debugger
     if(n > 0) {
       yield* nTimes(n -1);
       yield n - 1;
@@ -17,7 +16,12 @@
       return {value: 1, done: true}
     }}
   }
-  var t = test()
-  console.log(t)
-  console.log(typeof nTimes())
+ 
+  function* generatorFn() {
+    yield* [1,2,3];
+  }
+  for(const x of generatorFn()) {
+    console.log(x); // 1, 2, 3
+  }
+ 
 </script>
