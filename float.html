@@ -1,20 +1,16 @@
-<script>
-    var a = 0.1;
-    var b = 0.2;
-
-    const memory = new Float64Array(1);
-    memory[0] = a;
-
-    const intarr = new Uint8Array(memory.buffer);
-
-    /*for (let i = 0; i < 8; i++) {
-        let s = intarr[i].toString(2);
-        console.log(new Array(9 - s.length).join("0") + s)
-    }*/
-
-    // console.log(intarr)
-
-    `I said: "${ // 第一部分
-        s //第二部分
-    }"` // 第三部分
-</script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+    <div style="width: 200px;height:200px;float:right;background: lightgreen">1</div>
+    <!-- clear可以让浮动元素另起一行从指定方位排版 -->
+    <div style="width: 200px;height:200px; float: right;background: royalblue;clear: right;">2</div>
+    </div>
+    
+</body>
+</html>
