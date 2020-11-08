@@ -3,4 +3,11 @@
   for(let i = 0; i < 128; i++) {
     document.write(`<span style='background-color: lightgreen'>${i} ${String.fromCodePoint(i)}</span></br>`)
   }
+  /*
+  个人总结：
+  unicode: 在计算机内表示的字符所对应的code（16进制）
+  bmp: unicode中以四个十六进制所表示一个字符的code的部分
+  charCodeAt系列的api处理bmp范围的字符
+  codePointAt系列的api可以处理bmp范围外的字符
+  */
 </script>
