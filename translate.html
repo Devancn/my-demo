@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .wrap {
+      width: 100px;
+      height: 100px;
+      background: rebeccapurple;
+      transition: all 1s ease-out;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+  </div>
+  <div style="width:1px;height:1000px; background:rosybrown;margin-left: 600px"></div>
+  <script>
+    const element = document.getElementsByClassName('wrap')[0];
+  
+    setTimeout(() => {
+      element.style.transform = 'translate(100px)';
+    },1500);
+    setTimeout(() => {
+      element.style.transform = 'translate(600px)';
+    },3000);
+    console.log(element)
+  </script>
+</body>
+</html>
