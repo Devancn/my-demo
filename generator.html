@@ -20,8 +20,15 @@
   function* generatorFn() {
     yield* [1,2,3];
   }
-  for(const x of generatorFn()) {
+  const forFn = generatorFn();
+  for(const x of forFn) {
     console.log(x); // 1, 2, 3
   }
- 
+  console.log(forFn)
+  // GeneratorState suspended
+ console.log(generatorFn()); //generatorFn {<suspended>}
+ var g = generatorFn();
+ g.return(1)
+ // GeneratorState closed
+ console.log(g); // generator.html:29 generatorFn {<closed>}
 </script>
