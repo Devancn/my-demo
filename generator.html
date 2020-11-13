@@ -31,4 +31,36 @@
  g.return(1)
  // GeneratorState closed
  console.log(g); // generator.html:29 generatorFn {<closed>}
+
+/*
+ let person = {
+   name: 'devan',
+   age: 27,
+   [Symbol.iterator]() {
+     let count = 0;
+     const that = this;
+     return {
+       next() {
+         count ++;
+         return {
+          done: count === 2,
+          value: that.name
+         }
+       }
+     }
+   }
+ }
+ */
+ let person = {
+   name: 'devan',
+   age: 27,
+   *[Symbol.iterator]() {
+     for(let key in person) {
+       yield person[key]
+     }
+   }
+ }
+for(let key of person) {
+  console.log(key, 'value');
+}
 </script>
