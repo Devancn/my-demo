@@ -1,0 +1,10 @@
+<script>
+  let personName, personAge;
+  let person = {
+    name: 'devan',
+    age: 11111
+  }; // 在这里分号就特别需要注意加上，不然会报Uncaught ReferenceError: Cannot access 'person' before initialization
+  ({name: personName, age: personAge} = person);
+  console.log(personName);
+  console.log(personAge);
+</script>
