@@ -1,0 +1,19 @@
+<script>
+  let obj = {
+    z:5,
+    g:1,
+    d:2,
+    f:4,
+    name: 'devan',
+    age: 26,
+    [Symbol('gender')]:  'male'
+  }
+
+  for(let key in obj) {
+    console.log(key)
+  }
+  console.log(Object.keys(obj));
+  console.log(Object.getOwnPropertyNames(obj));
+  console.log(Object.getOwnPropertySymbols(obj))
+  console.log(Object.getOwnPropertyDescriptor(obj))
+</script>
