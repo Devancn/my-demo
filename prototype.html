@@ -7,5 +7,14 @@
     let app = new App;
     console.log(app instanceof App);
     console.log(app.constructor === Object)
+    // 恢复constructor属性并且[[Enumerable]]为false（不可枚举）
+    Object.defineProperty(App.prototype, 'constructor', {
+        value: App,
+        enumerable: false
+    })
+    console.log(app.constructor === App);
+    for(let key in app) {
+        console.log(app[key])
+    }
     Object.setPrototypeOf(Object.prototype, {a: 1}) //VM143:1 Uncaught TypeError: Immutable prototype object '#<Object>' cannot have their prototype set
 </script>
