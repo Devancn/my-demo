@@ -9,5 +9,13 @@
             console.log('test')
         }
     }
-    console.log(new AA().test());
+    class Person{
+        constructor(name) {
+            this.name = name;
+        }
+    }
+    const p1 = new Person('devan');
+    console.log(p1)
+    const p2 = new p1.constructor('dxh');
+    console.log(p2);
 </script>
