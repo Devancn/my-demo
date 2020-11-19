@@ -1,21 +1,55 @@
 <script>
-    class A {
+    // class A {
+    //     constructor() {
+    //         this.a = 1
+    //     }
+    // }
+    // var AA = class {
+    //     test() {
+    //         console.log('test')
+    //     }
+    // }
+    // class Person{
+    //     constructor(name) {
+    //         this.name = name;
+    //     }
+    // }
+    // const p1 = new Person('devan');
+    // console.log(p1)
+    // const p2 = new p1.constructor('dxh');
+    // console.log(p2);
+    /*
+    * super使用时的几个注意点
+    * 1. super只能在派生类构造函数和静态方法中使用
+    * 2. 不能单独使用super关键字，要么调用构造函数要么引用静态方法
+    * 3. super()的行为如同调用构造函数，如果需要给父类构造函数传参，则需要手动传入
+    * 4. 如果派生类没有定义构造函数，在实例化派生类时会调用super()，且会传入 传给派生类的 参数
+    * 5. 在类构造函数中，不能在super()之前引用this，否则会报ReferenceError
+    * 6. 如果派生类中显示定义了构造函数则需要在其中调用super()，否则会报ReferenceError
+    */
+    class Vehicle{
         constructor() {
-            this.a = 1
+            this.hasEngine = true;
+        }
+        // 定义静态方法属于类的成员（实际类也是函数，函数也是对象，静态方法就是函数这个对象的方法^_^）
+        static identify() {
+            console.log('vehicle');
         }
     }
-    var AA = class {
-        test() {
-            console.log('test')
+    class Bus extends Vehicle{
+        constructor() {
+            // 不能在super关键字之前引用this否则抛
+            // Uncaught ReferenceError: Must call super constructor in derived class before accessing 'this' or returning from derived constructor
+            // console.log(this)
+            super()
+            // 检查Vehicle的原型prototype是否在实例的[[prototype]]上出现过
+            console.log(this instanceof Vehicle);
+            console.log(this)
+        }
+        static identify() {
+            // 调用集成的类上定义的静态方法
+            super.identify();
         }
     }
-    class Person{
-        constructor(name) {
-            this.name = name;
-        }
-    }
-    const p1 = new Person('devan');
-    console.log(p1)
-    const p2 = new p1.constructor('dxh');
-    console.log(p2);
+    new Bus();
 </script>
