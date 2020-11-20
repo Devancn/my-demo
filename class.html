@@ -52,4 +52,23 @@
         }
     }
     new Bus();
+
+    class SuperArray extends Array{
+        constructor() {
+            super()
+            this.name = 'devan';
+        }
+        method() {
+            console.log(this.name)
+        }
+        // 决定在创建实例时返回的类型
+        static get [Symbol.species]() {
+            return Array;
+        }
+    }
+    let a1 = new SuperArray(1,2,3,4,5);
+    let a2 = a1.filter(x => x % 2);
+    console.log(a1, 'a1');
+    console.log(a2);
+    console.log(a2 instanceof SuperArray);
 </script>
