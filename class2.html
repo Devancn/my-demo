@@ -1,0 +1,32 @@
+<script>
+  class Vehicle{}
+  let FooMixin = Superclass => class extends Superclass{
+    foo() {
+      console.log('foo');
+    }
+  }
+
+  let BarMixin = Superclass => class extends Superclass{
+    bar() {
+      console.log('bar')
+    }
+  }
+
+  let BazMixin = Superclass => class extends Superclass{
+    baz() {
+      console.log('baz');
+    }
+  }
+
+  // class Bus extends FooMixin(BarMixin(BazMixin(Vehicle))) {}
+
+
+
+  function mix(BaseClass, ...Mixins) {
+    console.log(Mixins, 'Mixins');
+    return Mixins.reduce((accumulator, current) => current(accumulator) , BaseClass)
+  }
+  class Bus extends mix(Vehicle, FooMixin,BarMixin,BazMixin) {}
+  let b = new Bus();
+  console.log(b)
+</script>
