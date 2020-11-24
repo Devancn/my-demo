@@ -9,5 +9,13 @@
   console.log(proxy);
   proxy.name = 'devan';
   console.log(target)
+  Object.defineProperty(target, 'age', {
+    get() {
+      console.log('agege');
+      return 123;
+    }
+  })
+  console.log(target.age);
+  console.log(Reflect.get(target, 'age'))
   console.log(proxy instanceof Proxy); // Uncaught TypeError: Function has non-object prototype 'undefined' in instanceof check
 </script>
