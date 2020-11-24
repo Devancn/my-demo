@@ -1,5 +1,6 @@
 <script>
-  const target = {id: 'target'};
+  
+  /*const target = {id: 'target'};
   const handler = {};
   const proxy = new Proxy(target, handler);
   console.log(proxy.id);
@@ -18,4 +19,36 @@
   console.log(target.age);
   console.log(Reflect.get(target, 'age'))
   console.log(proxy instanceof Proxy); // Uncaught TypeError: Function has non-object prototype 'undefined' in instanceof check
+ 
+  const target = {};
+  Object.defineProperty(target, 'foo', {
+    configurable: false,
+    writable: false,
+    value: 'bar'
+  })
+
+  const handler = {
+    get() {
+      return 'qux';
+    }
+  }
+  const proxy = new Proxy(target, handler);
+  console.log(proxy.foo);//'get' on proxy: property 'foo' is a read-only and non-configurable data property on the proxy target but the proxy did not return its actual value (expected 'bar' but got 'qux')
+   */
+   const target = {
+     foo: 'bar'
+   };
+   const handler = {
+     get() {
+       return 'intercepted';
+     }
+   }
+   // 这个方法支持撤销代理对象与目标对象的关联，撤销代理的操作是不可逆的，撤销代理之后
+   // 再调用代理会抛出TypeError
+   const {proxy, revoke} = Proxy.revocable(target, handler);
+   console.log(proxy.foo);
+   console.log(target.foo);
+
+   revoke();
+   console.log(proxy.foo) // Uncaught TypeError: Cannot perform 'get' on a proxy that has been revoked
 </script>
