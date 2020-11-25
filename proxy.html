@@ -34,7 +34,7 @@
   }
   const proxy = new Proxy(target, handler);
   console.log(proxy.foo);//'get' on proxy: property 'foo' is a read-only and non-configurable data property on the proxy target but the proxy did not return its actual value (expected 'bar' but got 'qux')
-   */
+
    const target = {
      foo: 'bar'
    };
@@ -51,4 +51,21 @@
 
    revoke();
    console.log(proxy.foo) // Uncaught TypeError: Cannot perform 'get' on a proxy that has been revoked
+      */
+      const target = {
+        foo: 'bar'
+      }
+      const proxy = new Proxy(target, {
+        get() {
+          console.log('proxy get');
+          return Reflect.get(...arguments);
+        }
+      })
+      const secondProxy = new Proxy(proxy, {
+        get() {
+          console.log('secondProxy get');
+          return Reflect.get(...arguments);
+        }
+      })
+      console.log(secondProxy.foo);
 </script>
