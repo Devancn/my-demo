@@ -61,6 +61,41 @@ let p = new Promise((resolve, reject) => {
 
 setTimeout(console.log,0, p);
 */
+/*
 Promise.all([Promise.reject(1)]).catch(err => {
   console.log(err);
 })
+*/
+debugger
+class TrackablePromise extends Promise{
+  constructor(executor) {
+    console.log('1111111111')
+    const notifyHandlers = [];
+    super((resolve,reject) => {
+      return executor(resolve, reject, status => {
+        notifyHandlers.map(handler => handler(status))
+      })
+    });
+    this.notifyHandlers = notifyHandlers;
+  }
+
+  notify(notifyHandler) {
+    this.notifyHandlers.push(notifyHandler);
+    return this;
+  }
+}
+
+let p = new TrackablePromise((resolve, reject, notify) => {
+  function countDown(x) {
+    if(x > 0) {
+      notify(`${20 * x}% remaining`);
+      setTimeout(() => countDown(x -1), 1000)
+    } else {
+      resolve();
+    }
+  }
+  countDown(5);
+})
+debugger
+p.notify(x => setTimeout(console.log, 0, 'progress:', x));
+p.then(() => setTimeout(console.log,0,'completed'))
