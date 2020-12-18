@@ -1,0 +1,80 @@
+语言按语法分类
+1. 非形式语言 
+   中文，英文
+2. 形式语言（乔姆斯基谱系）
+   0型 无限制文法
+   1型 上下文相关文法
+   2型 上下文无关文法
+   3型 正则文法
+
+
+
+产生式（BNF）
+用尖括号括起来的名称来表示语法结构名
+语法结构分成基础机构和需要用其他语法结构定义的复核结构
+1. 基础结构称终结符
+2. 复合机构称非终结符
+引号和中间的字符表示终结符
+可以有括号
+* 表示重复多次
+| 表示或
++ 表示至少一次
+
+========================================================
+定义一门语言有"a"与"b"两个字符（终结符）组成,程序的最高结构称为"Program"
+以下定义为该语言的结构只能由重复的"a"或者重复的"b"组成，不支持ab这种语法
+<Program>:="a"+ | "b"+
+BNF是可递归的，类似ab这种无限这种就需要用到可递归，因此上面可以改造成下面这种定义
+<Program>:= <Program> "a"+ | <Program> "b"+
+此时Program可以由类似这种组成ababababbbab
+
+定义一个带括号的四则运算
+<Number> = "0" | "1" | "2" | ..... | "9"
+<DecimalNumber> = "0" | (("1" | "2" | ..... | "9") <Number>*)
+
+<PrimaryExpression> = <DecimalNumber> |
+  "(" <logicalExpression> ")"
+
+乘法
+<MultiplicativeExpression> = <PrimaryExpression> | 
+    <MultiplicativeExpression> "*" <PrimaryExpression> |
+    <MultiplicativeExpression> "/" <PrimaryExpression>
+
+加法
+<AdditiveExpression> = <MultiplicativeExpression> | 
+    <AdditiveExpression> "+" <MultiplicativeExpression> |
+    <AdditiveExpression> "-" <MultiplicativeExpression>
+
+逻辑
+<logicalExpression> = <AdditiveExpression> | 
+    <logicalExpression> "||" <AdditiveExpression> | 
+    <logicalExpression> "&&" <AdditiveExpression>
+
+
+
+
+通过产生式理解乔姆斯基谱系
+0型 无限制文法
+    ?::=? 
+1型 上下文相关文法
+    ?<A>?::=?<B>?
+2型 上下文无关文法
+    <A>::=?
+3型 正则文法
+    <A>::=<A>?
+    <A>::=?<A>
+
+无限制文法示例
+表示有终结符"c"可以产生非终结符<a>与<b>
+<a> <b> ::= "c"
+
+上下文相关文法
+表示"x"在 "a"和 "c"的上下文被解释成<b>
+"a" <b> "c" ::= "a" "x" "c"
+
+表示上下文不动，中间部分会被解析成logicalExpression
+"```四则运算" <logicalExpression> "```" = "```四则运算"
+(<AdditiveExpression> | 
+    <logicalExpression> "||" <AdditiveExpression> | 
+    <logicalExpression> "&&" <AdditiveExpression>)
+"```"
