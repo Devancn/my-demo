@@ -1,0 +1,12 @@
+
+<body>
+  <div id="div">
+sdfs
+  </div>
+</body>
+<script>
+  const div = document.getElementById('div');
+  const node = div.firstChild;
+  div.firstChild.nodeValue = "Some <strong>other</strong> message";
+  console.log(div.firstChild.nodeValue);
+</script>
