@@ -1,0 +1,17 @@
+<body>
+  <div id="app"></div>
+</body>
+<script>
+  const observer = new MutationObserver(event => {
+    console.log(event, 'event');
+  })
+  const app = document.getElementById('app');
+  observer.observe(app, {attributes: true, childList: true});
+  app.classList.add('devan');
+  setTimeout(() => {
+    app.style.background='#f600';
+    setTimeout(() => {
+      app.appendChild(document.createTextNode('hello devan'));
+    },2000)
+  },3000)
+</script>
