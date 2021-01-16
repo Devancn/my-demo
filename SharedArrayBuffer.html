@@ -1,0 +1,36 @@
+<body>
+  <script>
+    const workerScript = `
+     self.onmessage = data => {
+       const view = new Uint32Array(data);
+       for(let i = 0; i < 1E6; ++i) {
+         view[0] += 1;
+       }
+       self.postMessage(null);
+     };
+    `;
+
+    const workerScriptBlobUrl = URL.createObjectURL(new Blob([workerScript]));
+
+    const workers = [];
+    for(let i = 0; i < 4; ++i) {
+      workers.push(new Worker(workerScriptBlobUrl));
+    }
+    let responseCount = 0;
+    for(const worker of workers) {
+      worker.onmessage = () => {
+        if(++responseCount === workers.length) {
+          console.log(`Final buffer value: ${view[0]}`)
+        }
+      }
+    }
+
+    const sharedArrayBuffer = new sharedArrayBuffer(4);
+    const view = new Uint32Array(sharedArrayBuffer);
+    view[0] = 1;
+    // 把SharedArrayBUffer发送到每个工作线程
+    for(const worker of worker) {
+      worker.postMessage(sharedArrayBuffer);
+    }
+  </script>
+</body>
