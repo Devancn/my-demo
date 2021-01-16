@@ -1,0 +1,35 @@
+<script>
+  class ProxySandBox{
+    constructor() {
+      // 原始window对象
+      const rawWindow = window;
+      // 创建一个假的window对象
+      const fakeWindow = {};
+      // 使用Proxy对假的window对象做一个代理
+      let proxy = new Proxy(fakeWindow, {
+        set(target, prop, value) {
+          // 给假的window赋值对应值
+          Reflect.set(target, prop, value);
+          return true;
+        },
+        get(target, prop, value) {
+          // 优先从假的window对象去获取值，如果没有则返回原始window对象上的属性
+          return  Reflect.get(target, prop) || rawWindow[prop]
+        }
+      })
+      return proxy;
+    }
+  }
+
+(window => {
+  window.name = 'devan';
+  window.age = 27;
+  console.log(window.name, window.age);
+})(new ProxySandBox());
+
+(window => {
+  window.name = 'dxh';
+  window.job = 'coder';
+  console.log(window.name, window.job);
+})(new ProxySandBox());
+</script>
