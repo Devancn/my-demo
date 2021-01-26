@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <!-- <div id="foo"></div>
+  <div id="bar"></div> -->
+  <script>
+    document.body.innerHTML = `
+      <div id="foo"></div>
+      <div id="bar"></div>
+    `
+    const foo = document.querySelector('#foo');
+    const bar = document.querySelector('#bar');
+
+    const openShadowDOM = foo.attachShadow({mode: 'open'});
+    const closedShadowDOm = bar.attachShadow({mode: 'closed'});
+
+    console.log(openShadowDOM, 'openShadowDOM');
+    console.log(closedShadowDOm, 'closedShadowDOm');
+
+    console.log(foo.shadowRoot, 'foo.shadowRoot');
+    console.log(bar.shadowRoot, 'bar.shadowRoot')
+
+    console.log(openShadowDOM === foo.shadowRoot);
+    openShadowDOM.innerHTML='<div id="test">123</div>'
+
+    console.log(document.getElementById('test'));
+    console.log(openShadowDOM.getElementById('test'));
+    console.log(foo, 'foo')
+  </script>
+</body>
+</html>
