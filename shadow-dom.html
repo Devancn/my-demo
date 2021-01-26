@@ -9,6 +9,7 @@
   <!-- <div id="foo"></div>
   <div id="bar"></div> -->
   <script>
+    /*
     document.body.innerHTML = `
       <div id="foo"></div>
       <div id="bar"></div>
@@ -31,6 +32,35 @@
     console.log(document.getElementById('test'));
     console.log(openShadowDOM.getElementById('test'));
     console.log(foo, 'foo')
+   
+    document.body.innerHTML = ` 
+      <div></div> 
+      <p id="foo">Move me</p> 
+    `;
+    const divElement = document.querySelector('div');
+    const pElement = document.querySelector('p');
+
+    const shadowDOM = divElement.attachShadow({mode: 'open'});
+
+    divElement.parentElement.removeChild(pElement);
+
+    shadowDOM.appendChild(pElement);
+    console.log(shadowDOM.innerHTML);
+    console.log(pElement)
+     */
+    document.body.innerHTML = `
+     <div>
+        <p slot="foo">Foo</p>
+        <p slot="bar">Bar</p>
+      </div>
+    `
+    // setTimeout(() => document.querySelector('div').attachShadow({mode: 'open'}).innerHTML = `<slot></slot>`, 1000)
+    document.querySelector('div')
+      .attachShadow({mode: 'open'})
+      .innerHTML = `
+        <slot name="bar"></slot>
+        <slot name="foo"></slot>
+       `
   </script>
 </body>
 </html>
