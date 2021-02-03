@@ -1,0 +1,31 @@
+<script>
+  const xhr = XMLHttpRequest();
+  xhr.open('get', 'http://www.baidu.com', true)
+  // 必须在open之后，send方法之前调用
+  xhr.setRequestHeader('token', 'devan')
+  xhr.addEventListener('readystatechange', () => {
+    /*
+      readyState 五个值对应意思
+      - 0 表示请问未初始化，每调用open函数
+      - 1 请求已经初始化，调用过open函数
+      - 2 请求未发送，未调用send函数
+      - 3 请求已发送，已调用send函数
+      - 4 接受相应内容中 ，响应未完成
+      - 5 响应内容已完成
+    */
+    // console.log(xhr.readyState)
+    if(xhr.readyState === 4) {
+      if((xhr.status >=200 && xhr.status < 300 )|| xhr.status === 304) {
+        // 获取响应头
+        xhr.getAllResponseHeader('name');
+        console.log(xhr.responseText)
+      } else {
+        console.log(xhr.status);
+      }
+    }
+  xhr.send(null)
+  
+    // 取消异步请求
+    xhr.abort()
+  })
+</script>
