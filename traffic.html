@@ -112,7 +112,7 @@
 
   /*
     去副作用化
-  */
+  
  const traffic = document.querySelector('.traffic');
 
  function signalLoop(subject, signals = [], onSignal) {
@@ -135,5 +135,25 @@
   signalLoop(traffic, signals, (subject, signal) => {
     subject.className  = `traffic ${signal}`
   })
+  */
+
+ /*
+  代码的“语义”与可读性
+ */
+function wait(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
+
+const traffic = document.querySelector('.traffic');
+(async function() {
+  while(1) {
+    await wait(5000);
+    traffic.className = 'traffic wait';
+    await wait(1500)
+    traffic.className = 'traffic stop';
+    await wait(3500)
+    traffic.className = 'traffic pass'
+  }
+})()
 </script>
 </html>
