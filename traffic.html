@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>模拟交通灯</title>
+  <style>
+    html, body{
+      width: 100%;
+      height: 100%;
+      padding: 0;
+      margin: 0;
+      overflow: hidden;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    header{
+      line-height: 2rem;
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+    }
+
+    .traffic {
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .traffic .light{
+      width: 100px;
+      height: 100px;
+      background-color: #999;
+      border-radius: 50%;
+    }
+
+    .traffic.pass .light:nth-child(1) {
+      background-color: #0a6;
+    }
+
+    .traffic.wait .light:nth-child(2){
+      background-color: #cc0;
+    }
+
+    .traffic.stop .light:nth-child(3){
+      background-color: #c00;
+    }
+  </style>
+</head>
+<body>
+  <header>模拟交通灯</header>
+  <main>
+    <div class="traffic pass">
+      <div class="light"></div>
+      <div class="light"></div>
+      <div class="light"></div>
+    </div>
+  </main>
+</body>
+
+<script>
+  /* 
+  以下代码存在问题：
+  1. 如果我们修改了HTML代码，元素不叫座 traffic 了， 这个函数就不work了。
+  2. 如果我们想把这个函数复用到其它地方，我么害的在那个地方重建这个 traffic 对象。
+  const traffic = document.querySelector('.traffic');
+
+  function loop() {
+    traffic.className = 'traffic pass';
+    setTimeout(() => {
+      traffic.className = 'traffic wait';
+      setTimeout(() => {
+        traffic.className = 'traffic stop';
+        setTimeout(loop, 3500)
+      },1500)
+    },5000)
+  }
+
+  loop()
+  */
+
+ /*
+  数据抽象:
+  状态: pass wait stop
+  时间: 5000 1500 3500
+
+  存在问题：
+  signalLoop 函数中存在一部分改变外部状态的代码（subject.className=`traffic ${signal}`）。我们把改变外部状态的部分叫做代码的副作用(side-effect)。
+  通常情况下我们可以考虑把函数体内部有副作用的代码剥离出来，提升函数的通用性、稳定性、和可测试性
+
+  const traffic = document.querySelector('.traffic');
+
+  function signalLoop(subject, signals = []) {
+    const signalCount = signals.length;
+    
+    function updateState(i) {
+      const {signal, duration} = signals[i % signalCount];
+      subject.className = signal;
+      setTimeout(updateState.bind(null, i + 1), duration)
+    }
+    updateState(0)
+  }
+
+  signalLoop(traffic, [
+    {signal: 'traffic pass', duration: 5000},
+    {signal: 'traffic wait', duration: 3500},
+    {signal: 'traffic stop', duration: 1500}
+  ])
+   */
+
+  /*
+    去副作用化
+  */
+ const traffic = document.querySelector('.traffic');
+
+ function signalLoop(subject, signals = [], onSignal) {
+   const signalCount = signals.length;
+
+   function updateState(i) {
+     const {signal, duration} = signals[i % signalCount];
+     onSignal(subject, signal);
+     setTimeout(updateState.bind(null, i+ 1), duration)
+   }
+   updateState(0)
+ }
+
+ const signals = [
+   {signal: 'pass', duration: 5000},
+   {signal: 'wait', duration: 3500},
+   {signal: 'stop', duration: 1500}
+ ]
+
+  signalLoop(traffic, signals, (subject, signal) => {
+    subject.className  = `traffic ${signal}`
+  })
+</script>
+</html>
