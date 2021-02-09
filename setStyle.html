@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <ul>
+    <li>1</li>
+    <li>2</li>
+    <li>3</li>
+    <li>4</li>
+    <li>5</li>
+    <li>6</li>
+    <li>7</li>
+  </ul>
+  <script>
+    /*
+ 这两个函数问题点:
+ 1. 都依赖外部的环境，同时也改变这个环境
+ */
+    function setStyle(el, key, value) {
+      el.style[key] = value;
+    }
+
+    function setStyles(els, key, value) {
+      els.forEach(el => setStyle(el, key, value))
+    }
+
+    // 严格的纯函数特点： 确定性、无副作用、幂等
+
+    function batch(fn) {
+      return function (subject, ...args) {
+        if (Array.isArray(subject)) {
+          return subject.map(s => {
+            return fn.call(this, s, ...args)
+          })
+        }
+        return fn.call(this, subject, ...args)
+      }
+    }
+
+    const setStyle2 = batch((el, key, value) => {
+      el.style[key] = value
+    })
+
+    const items = document.querySelectorAll('li:nth-child(2n+1)');
+
+    setStyle2([...items], 'color', 'red')
+
+    function continous(reducer) {
+      return function (...args) {
+        return args.reduce((a, b) => reducer(a, b))
+      }
+    }
+
+    function fold(fn) {
+      return function (...args) {
+        const lastArg = args[args.length - 1];
+        if (lastArg.length) {
+          return fn.call(this, ...args.slice(0, -1), ...lastArg);
+        }
+        return fn.call(this, ...args);
+      }
+    }
+
+    const setStyle3 = fold(continous(([key, value], el) => {
+      el.style[key] = value;
+      return [key, value]
+    }))
+
+    const list = document.querySelectorAll('li:nth-child(2n + 1)');
+    setStyle3(['color', 'red'], list)
+  </script>
+</body>
+
+</html>
