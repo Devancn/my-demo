@@ -88,7 +88,7 @@
   </div>
 </body>
 <script>
-const text = `If you already have experience making drawings with computers, you know that in that process you draw a circle, then a rectangle, a line, some triangles until you compose the image you want. That process is very similar to writing a letter or a book by hand - it is a set of instructions that do one task after another.
+  const text = `If you already have experience making drawings with computers, you know that in that process you draw a circle, then a rectangle, a line, some triangles until you compose the image you want. That process is very similar to writing a letter or a book by hand - it is a set of instructions that do one task after another.
 
 Shaders are also a set of instructions, but the instructions are executed all at once for every single pixel on the screen. That means the code you write has to behave differently depending on the position of the pixel on the screen. Like a type press, your program will work as a function that receives a position and returns a color, and when it's compiled it will run extraordinarily fast. 
 
@@ -118,7 +118,7 @@ Imagine the CPU of your computer as a big industrial pipe, and every task as som
   const countdownEl = document.getElementById('countdown');
   const typedEl = document.getElementById('typed');
 
-  
+
   /*async function main() {
     panel.innerText = text;
     // 开场动画
@@ -178,9 +178,9 @@ Imagine the CPU of your computer as a big industrial pipe, and every task as som
     await starting(startingEl);
     const countDownPromise = countDown(countdownEl, 10);
     typedEl.innerText = '_';
-    for(const typing of typings(text)) {
+    for (const typing of typings(text)) {
       const key = await Promise.race([countDownPromise, typing]);
-      if(key) {
+      if (key) {
         typedEl.innerText = `${typedEl.innerText.slice(0, -1)}${key}_`;
       } else {
         break
@@ -188,6 +188,98 @@ Imagine the CPU of your computer as a big industrial pipe, and every task as som
     }
     console.log('结束');
   }
+
+
+  /********************************************************/
+  function defer() {
+    const deferred = {};
+    deferred.promise = new Promise((resolve, reject) => {
+      deferred.resolve = resolve;
+      deferred.reject = reject;
+    })
+    return deferred;
+  }
+
+  const _state = Symbol('state');
+  const _checkers = Symbol('checker');
+
+  class Signal {
+    constructor(initState) {
+      this[_state] = initState;
+      this[_checkers] = new Map();
+    }
+
+    get state() {
+      return this[_state]
+    }
+
+    set state(value) {
+      // 每次状态变化时，检查未结束的 defer 对象
+      [...this[_checkers]].forEach(([promise, { type, deferred, state }]) => {
+        // 当信号状态改变时， while 信号结束
+        if (type === 'while' && value !== state
+          //  当信号状态改变为对应的 state 时， until 信号借宿 
+          || type === 'until' && value === state
+        ) {
+          deferred.resolve(value);
+          this[_checkers].delete(promise)
+        }
+      })
+      this[_state] = value;
+    }
+
+    while(state) {
+      const deferred = defer();
+      if (state !== this[_state]) {
+        // 如果当前状态不是 while 状态， while 的 deferred 结束
+        deferred.resolve(this[_state]);
+      } else {
+        // 否则将它添加到 checkers 列表中等待后续检查
+        this[_checkers].set(deferred.promise, { type: 'while', deferred, state })
+      }
+      return deferred.promise;
+    }
+
+    until(state) {
+      const deferred = defer();
+      if (state === this[_state]) {
+        // 如果当前状态时 until 状态， until 的deferred 结束
+        deferred.resolve(this[_state]);
+      } else {
+        // 否则将它添加到 checkers 列表中等待后续检查
+        this[_checkers].set(deferred.promise, { type: 'until', deferred, state });
+      }
+      return deferred.promise;
+    }
+
+    delete(promise) {
+      this[_checkers].delete(promise)
+    }
+
+    deleteAll() {
+      this[_checkers].clear();
+    }
+  }
+
+  const lucky = new Signal();
+
+  const timerID = setInterval(() => {
+    const num = Math.ceil(Math.random() * 10);
+    console.log(num);
+    lucky.state = num;
+  }, 1000)
+
+  async function addLuckBoy(name, num) {
+    await lucky.until(num);
+    console.log(`${name} is luck boy!`);
+    clearInterval(timerID);
+    lucky.deleteAll();
+  }
+
+  addLuckBoy('张三', 3);
+  addLuckBoy('李四', 5);
+  addLuckBoy('王五', 7);
+
 </script>
 
 </html>
