@@ -11,6 +11,7 @@
       position: relative;
       width: 790px;
       height: 340px;
+      overflow: hidden;
     }
 
     .slider ul {
@@ -35,6 +36,11 @@
       opacity: 1;
     }
 
+    .slider__item image {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
 
     .slider__next,
     .slider__previous {
@@ -117,7 +123,7 @@
 
 <body>
   <div class="slider">
-    <ul>
+    <!-- <ul>
       <li class="slider__item--selected">
         <img src="https://p5.ssl.qhimg.com/t0119c74624763dd070.png" />
       </li>
@@ -138,15 +144,18 @@
       <span class="slider__control-buttons"></span>
       <span class="slider__control-buttons"></span>
       <span class="slider__control-buttons"></span>
-    </div>
+    </div> -->
   </div>
 </body>
 <script>
   class Slider {
-    constructor({ container, cycle = 3000 } = {}) {
+    constructor({ container, images = [], cycle = 3000 } = {}) {
       this.container = container;
+      this.data = images;
+      this.container.innerHTML = this.render(this.data);
       this.items = Array.from(container.querySelectorAll('.slider__item, .slider__item--selected'));
       this.cycle = cycle;
+      this.slideTo(0)
 
       /*
       const controller = this.container.querySelector('.slider__control');
@@ -194,8 +203,24 @@
 
     }
 
+    render(images) {
+      const content = images.map(image => `
+        <li class="slider__item">
+          <img src="${image}"/>
+        </li>
+      `.trim())
+
+      return `<ul>${content.join('')}</ul>`
+    }
+
     registerPlugins(...plugins) {
-      plugins.forEach(plugin => plugin(this))
+      plugins.forEach(plugin => {
+        const pluginContainer = document.createElement('div');
+        pluginContainer.className = 'slider__plugin';
+        pluginContainer.innerHTML = plugin.render(this.data);
+        this.container.appendChild(pluginContainer);
+        plugin.initialize(this);
+      })
     }
 
     getSelectedItem() {
@@ -246,58 +271,136 @@
   }
 
 
-  function pluginController(slider) {
-    const controller = slider.container.querySelector('.slider__control');
-    if (controller) {
-      const buttons = controller.querySelectorAll('.slider__control-buttons, .slider__control-buttons--selected');
-      controller.addEventListener('mouseover', evt => {
-        slider.stop();
-        const idx = Array.from(buttons).indexOf(event.target);
-        if (idx >= 0) {
-          slider.slideTo(idx);
-          slider.stop()
-        }
-      })
+  // function pluginController(slider) {
+  //   const controller = slider.container.querySelector('.slider__control');
+  //   if (controller) {
+  //     const buttons = controller.querySelectorAll('.slider__control-buttons, .slider__control-buttons--selected');
+  //     controller.addEventListener('mouseover', evt => {
+  //       slider.stop();
+  //       const idx = Array.from(buttons).indexOf(event.target);
+  //       if (idx >= 0) {
+  //         slider.slideTo(idx);
+  //         slider.stop()
+  //       }
+  //     })
 
-      controller.addEventListener('mouseout', evt => {
-        slider.start()
-      })
-      // 注册slide事件，将选中的图片和小圆点设置为selected状态
-      slider.container.addEventListener('slide', evt => {
-        const idx = evt.detail.index;
-        const selected = controller.querySelector('.slider__control-buttons--selected');
-        if (selected) selected.className = 'slider__control-buttons';
-        buttons[idx].className = 'slider__control-buttons--selected';
-      })
+  //     controller.addEventListener('mouseout', evt => {
+  //       slider.start()
+  //     })
+  //     // 注册slide事件，将选中的图片和小圆点设置为selected状态
+  //     slider.container.addEventListener('slide', evt => {
+  //       const idx = evt.detail.index;
+  //       const selected = controller.querySelector('.slider__control-buttons--selected');
+  //       if (selected) selected.className = 'slider__control-buttons';
+  //       buttons[idx].className = 'slider__control-buttons--selected';
+  //     })
+  //   }
+  // }
+  // 小圆点插件
+  const pluginController = {
+    // 小圆点的数量与图片数量一致
+    render(images) {
+      console.log(images, 'images');
+      return `
+        <div class="slider__control">
+          ${images.map((image, i) => `
+            <span class="slider__control-buttons${i === 0 ? '--selected' : ''}"></span>
+            `).join('')}
+        </div>
+      `.trim()
+    },
+    initialize(slider) {
+      const controller = slider.container.querySelector('.slider__control');
+      if (controller) {
+        const buttons = controller.querySelectorAll('.slider__control-buttons, .slider__control-buttons--selected');
+        controller.addEventListener('mouseover', evt => {
+          slider.stop();
+          const idx = Array.from(buttons).indexOf(event.target);
+          if (idx >= 0) {
+            slider.slideTo(idx);
+            slider.stop()
+          }
+        })
+
+        controller.addEventListener('mouseout', evt => {
+          slider.start()
+        })
+        // 注册slide事件，将选中的图片和小圆点设置为selected状态
+        slider.container.addEventListener('slide', evt => {
+          const idx = evt.detail.index;
+          const selected = controller.querySelector('.slider__control-buttons--selected');
+          if (selected) selected.className = 'slider__control-buttons';
+          buttons[idx].className = 'slider__control-buttons--selected';
+        })
+      }
     }
   }
+  const pluginPrevious = {
+    render() {
+      return `<a class="slider__previous"</a>`
+    },
 
-  function pluginPrevious(slider) {
-    const previous = slider.container.querySelector('.slider__previous');
-    if (previous) {
-      previous.addEventListener('click', evt => {
-        slider.stop();
-        slider.slidePrevious();
-        slider.start();
-        evt.preventDefault();
-      })
+    initialize(slider) {
+      const previous = slider.container.querySelector('.slider__previous');
+      if (previous) {
+        previous.addEventListener('click', evt => {
+          slider.stop();
+          slider.slidePrevious();
+          slider.start();
+          evt.preventDefault();
+        })
+      }
     }
   }
-
-  function pluginNext(slider) {
-    const next = slider.container.querySelector('.slider__next');
-    if (next) {
-      next.addEventListener('click', evt => {
-        slider.stop();
-        slider.slideNext();
-        slider.start();
-        evt.preventDefault();
-      })
+  // function pluginPrevious(slider) {
+  //   const previous = slider.container.querySelector('.slider__previous');
+  //   if (previous) {
+  //     previous.addEventListener('click', evt => {
+  //       slider.stop();
+  //       slider.slidePrevious();
+  //       slider.start();
+  //       evt.preventDefault();
+  //     })
+  //   }
+  // }
+  const pluginNext = {
+    render() {
+      return `<a class="slider__next"></a>`
+    },
+    initialize(slider) {
+      const next = slider.container.querySelector('.slider__next');
+      if (next) {
+        next.addEventListener('click', evt => {
+          slider.stop();
+          slider.slideNext();
+          slider.start();
+          evt.preventDefault();
+        })
+      }
     }
   }
+  // function pluginNext(slider) {
+  //   const next = slider.container.querySelector('.slider__next');
+  //   if (next) {
+  //     next.addEventListener('click', evt => {
+  //       slider.stop();
+  //       slider.slideNext();
+  //       slider.start();
+  //       evt.preventDefault();
+  //     })
+  //   }
+  // }
 
   const container = document.querySelector('.slider');
-  const slider = new Slider({ container });
+  const images = [
+    "https://static001.geekbang.org/resource/image/bb/21/bb38fb7c1073eaee1755f81131f11d21.jpg",
+    "https://static001.geekbang.org/resource/image/1b/21/1b809d9a2bdf3ecc481322d7c9223c21.jpg",
+    "https://static001.geekbang.org/resource/image/b6/4f/b6d65b2f12646a9fd6b8cb2b020d754f.jpg",
+    "https://static001.geekbang.org/resource/image/73/e4/730ea9c393def7975deceb48b3eb6fe4.jpg",
+  ]
+  const slider = new Slider({
+    container, images
+  });
   slider.registerPlugins(pluginController, pluginPrevious, pluginNext)
   slider.start()
 </script>
