@@ -148,128 +148,6 @@
   </div>
 </body>
 <script>
-  class Slider {
-    constructor({ container, images = [], cycle = 3000 } = {}) {
-      this.container = container;
-      this.data = images;
-      this.container.innerHTML = this.render(this.data);
-      this.items = Array.from(container.querySelectorAll('.slider__item, .slider__item--selected'));
-      this.cycle = cycle;
-      this.slideTo(0)
-
-      /*
-      const controller = this.container.querySelector('.slider__control');
-      const buttons = controller.querySelectorAll('.slider__control-buttons, .slider__control-buttons--selected');
-
-      controller.addEventListener('mouseover', evt => {
-        this.stop();
-        const idx = Array.from(buttons).indexOf(event.target);
-        if (idx >= 0) {
-          this.slideTo(idx);
-          this.stop()
-        }
-      })
-
-      controller.addEventListener('mouseout', evt => {
-        this.start()
-      })
-
-      // 注册slide事件，将选中的图片和小圆点设置为selected状态
-      this.container.addEventListener('slide', evt => {
-        const idx = evt.detail.index;
-        const selected = controller.querySelector('.slider__control-buttons--selected');
-        if (selected) selected.className = 'slider__control-buttons';
-        const buttons = controller.querySelectorAll('.slider__control-buttons, .slider__control-buttons--selected');
-
-        buttons[idx].className = 'slider__control-buttons--selected';
-      })
-
-      const previous = this.container.querySelector('.slider__previous');
-      previous.addEventListener('click', evt => {
-        this.stop();
-        this.slidePrevious();
-        this.start();
-        evt.preventDefault();
-      })
-
-      const next = this.container.querySelector('.slider__next');
-      next.addEventListener('click', evt => {
-        this.stop();
-        this.slideNext();
-        this.start();
-        evt.preventDefault();
-      })
-        */
-
-    }
-
-    render(images) {
-      const content = images.map(image => `
-        <li class="slider__item">
-          <img src="${image}"/>
-        </li>
-      `.trim())
-
-      return `<ul>${content.join('')}</ul>`
-    }
-
-    registerPlugins(...plugins) {
-      plugins.forEach(plugin => {
-        const pluginContainer = document.createElement('div');
-        pluginContainer.className = 'slider__plugin';
-        pluginContainer.innerHTML = plugin.render(this.data);
-        this.container.appendChild(pluginContainer);
-        plugin.initialize(this);
-      })
-    }
-
-    getSelectedItem() {
-      const selected = this.container.querySelector('.slider__item--selected');
-      return selected;
-    }
-
-    getSelectedItemIndex() {
-      return this.items.indexOf(this.getSelectedItem())
-    }
-
-    slideTo(idx) {
-      const selected = this.getSelectedItem();
-      if (selected) {
-        selected.className = 'slider__item';
-      }
-      const item = this.items[idx];
-      if (item) {
-        item.className = 'slider__item--selected'
-      }
-
-      const detail = { index: idx };
-      const event = new CustomEvent('slide', { bubbles: true, detail });
-      this.container.dispatchEvent(event)
-    }
-
-    // 将下一张图片标记为选中状态
-    slideNext() {
-      const currentIdx = this.getSelectedItemIndex();
-      const nextIdx = (currentIdx + 1) % this.items.length;
-      this.slideTo(nextIdx);
-    }
-
-    slidePrevious() {
-      const currentIdx = this.getSelectedItemIndex();
-      const previousIdx = (this.items.length + currentIdx - 1) % this.items.length;
-      this.slideTo(previousIdx)
-    }
-
-    start() {
-      this.stop();
-      this._timer = setInterval(() => this.slideNext(), this.cycle)
-    }
-
-    stop() {
-      clearInterval(this._timer)
-    }
-  }
-
 
   // function pluginController(slider) {
   //   const controller = slider.container.querySelector('.slider__control');
@@ -391,6 +269,171 @@
   //   }
   // }
 
+
+  class Component {
+    static name = 'component'
+
+    constructor({ container, data, parent = null } = {}) {
+      this.data = data;
+      this.container = container;
+      this.container.innerHTML = this.render(this.data);
+    }
+
+    registerSubComponents(...Comps) {
+      const data = this.data;
+      const container = this.container;
+      this.children = this.children || [];
+      Comps.forEach((Comp) => {
+        const subContainer = document.createElement('div');
+        const sub = new Comp({ container: subContainer, data, parent: this })
+        container.appendChild(subContainer);
+        this.children.push(sub);
+      });
+    }
+
+    render(data) {
+      return '';
+    }
+  }
+
+  class Slider extends Component {
+    static name = 'slider'
+
+    constructor({ container, images = [], cycle = 3000 } = {}) {
+      super({ container, data: images })
+      this.items = Array.from(this.container.querySelectorAll('.slider__item, .slider__item--selected'));
+      this.cycle = cycle;
+      this.slideTo(0);
+    }
+
+    render(images) {
+      const content = images.map(image => `
+      <li class="slider__item">
+        <img src="${image}"/>  
+      </li>
+      `.trim());
+      return `<ul>${content.join('')}</ul>`
+    }
+
+    getSelectedItem() {
+      const selected = this.container.querySelector('.slider__item--selected');
+      return selected;
+    }
+
+    getSelectedItemIndex() {
+      return this.items.indexOf(this.getSelectedItem())
+    }
+
+    slideTo(idx) {
+      const selected = this.getSelectedItem();
+      if (selected) {
+        selected.className = 'slider__item';
+      }
+      const item = this.items[idx];
+      if (item) {
+        item.className = 'slider__item--selected'
+      }
+
+      const detail = { index: idx };
+      const event = new CustomEvent('slide', { bubbles: true, detail });
+      this.container.dispatchEvent(event)
+    }
+
+    // 将下一张图片标记为选中状态
+    slideNext() {
+      const currentIdx = this.getSelectedItemIndex();
+      const nextIdx = (currentIdx + 1) % this.items.length;
+      this.slideTo(nextIdx);
+    }
+
+    slidePrevious() {
+      const currentIdx = this.getSelectedItemIndex();
+      const previousIdx = (this.items.length + currentIdx - 1) % this.items.length;
+      this.slideTo(previousIdx)
+    }
+
+    start() {
+      this.stop();
+      this._timer = setInterval(() => this.slideNext(), this.cycle)
+    }
+
+    stop() {
+      clearInterval(this._timer)
+    }
+  }
+
+  class SliderController extends Component {
+    static name = 'slider__control'
+
+    constructor({ container, data, parent: slider }) {
+      super({ container, data })
+
+      const buttons = container.querySelectorAll('.slider__control-buttons, .slider__control-buttons--selected');
+      container.addEventListener('mouseover', (evt) => {
+        const idx = Array.from(buttons).indexOf(evt.target);
+        if (idx >= 0) {
+          slider.slideTo(idx);
+          slider.stop();
+        }
+      });
+
+      container.addEventListener('mouseout', (evt) => {
+        slider.start();
+      });
+
+      slider.container.addEventListener('slide', (evt) => {
+        const idx = evt.detail.index;
+        const selected = container.querySelector('.slider__control-buttons--selected');
+        if (selected) selected.className = 'slider__control-buttons';
+        buttons[idx].className = 'slider__control-buttons--selected';
+      });
+    }
+
+    render(images) {
+      return `
+      <div class="slider__control">
+        ${images.map((image, i) => `
+            <span class="slider__control-buttons${i === 0 ? '--selected' : ''}"></span>
+        `).join('')}
+      </div>    
+    `.trim();
+    }
+  }
+
+  class SliderPrevious extends Component {
+    constructor({ container, parent: slider }) {
+      super({ container })
+      const previous = container.querySelector('.slider__previous');
+      previous.addEventListener('click', evt => {
+        slider.stop();
+        slider.slidePrevious();
+        slider.start();
+        evt.preventDefault();
+      })
+    }
+
+    render() {
+      return `<a class="slider__previous"></a>`
+    }
+  }
+
+  class SliderNext extends Component {
+    constructor({ container, parent: slider }) {
+      super({ container });
+      const previous = container.querySelector('.slider__next');
+      previous.addEventListener('click', (evt) => {
+        slider.stop();
+        slider.slidePrevious();
+        slider.start();
+        evt.preventDefault();
+      });
+    }
+    
+    render() {
+      return '<a class="slider__next"></a>';
+    }
+  }
+
   const container = document.querySelector('.slider');
   const images = [
     "https://static001.geekbang.org/resource/image/bb/21/bb38fb7c1073eaee1755f81131f11d21.jpg",
@@ -401,7 +444,7 @@
   const slider = new Slider({
     container, images
   });
-  slider.registerPlugins(pluginController, pluginPrevious, pluginNext)
+  slider.registerSubComponents(SliderController, SliderPrevious, SliderNext)
   slider.start()
 </script>
 
