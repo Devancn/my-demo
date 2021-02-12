@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>文字滚动</title>
+  <script src="https://s3.ssl.qhres.com/!67fc024a/markdown.min.js"></script>
+  <style>
+    body {
+      display: flex;
+    }
+
+    #editor {
+      width: 45%;
+      height: 350px;
+      margin-right: 10px;
+    }
+
+    #preview {
+      width: 45%;
+      height: 350px;
+      overflow: scroll;
+    }
+
+    #hintbar {
+      position: relative;
+      right: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <textarea id="editor" oninput="this.editor.update()" rows="6" cols="60">
+    在 2001 到 2003 年间，Judith Miller 在纽约时报上发表了一批文章，宣称伊拉克有能力和野心生产大规模杀伤性武器。这是假新闻。
+
+回顾当年，我们无法确定 Miller 写的这些故事在美国 2013 年做出发动伊拉克战争的决定中扮演了怎样的角色；与 Miller 相同来源的消息与小布什政府的对外政策团队有很大关联。但是，纽约时报仍然起到了为这一政策背书的作用，尤其是对民主党人，本来他们应该会更坚定地反对小布什的政策。毕竟，纽约时报可不是一些无人问津的地方小报，它是整个美国影响力最大的报刊，它一般被认为具有左倾倾向。Miller 的故事某种程度上吻合报纸的政治倾向。
+
+我们可以把 Miller 的错误和最近关于 Facebook 的假新闻问题联系起来看；Facebook 用自己的故事告诫我们“假新闻是坏的”。然而，我持有不同的观点：**新闻假不假没那么重要，由谁来决定什么是新闻才是第一重要的**。
+
+
+
+#### Facebook 的媒体商业化
+
+在[聚集理论](https://stratechery.com/2015/aggregation-theory/)中，我描述了基于分配的经济权利的消亡导致强势中介的崛起，它们掌控客户体验并将它们的供应商商品化。[在 Facebook 的例子里](https://stratechery.com/2016/the-fang-playbook/)，社交网络之所以兴起，是因为之前存在的线下社会网络在往线上网络转变。考虑到人类本质是社会化的，用户开始将时间花在 Facebook 上阅读、发表观点和获取新闻。
+  </textarea>
+  <div id="preview"></div>
+  <div id="hintbar">0%</div>
+</body>
+<script>
+  function Editor(input, preview) {
+    this.update = function () {
+      // 把input中的内容经过markdown解析后赋值给 preview元素
+      preview.innerHTML = markdown.toHTML(input.value)
+    }
+    input.editor = this;
+    this.update();
+  }
+
+  new Editor(editor, preview);
+
+  /**
+   * 三部分 UI 耦合在一起的 update 方法
+   * update 方法读取滚动元素 src 的滚动位置， 换算成百分比，然后将同步的目标元素
+   * dest 的 scrollTop 属性设置为和这个百分比值对应的滚动位置。最后将这个百分比值赋值给 hint 元素
+   * */
+  function update(src, dest, hint) {
+    var scrollRange = src.scrollHeight - src.clientHeight,
+      // 或者滚动百分比
+      p = src.scrollTop / scrollRange;
+    dest.scrollTop = p * (dest.scrollHeight - dest.clientHeight);
+
+    hint.innerHTML = Math.round(100 * p) + '%';
+  }
+  update(editor, preview, hintbar);
+
+  editor.addEventListener('scroll', evt => {
+    update(editor, preview, hintbar)
+  })
+
+  preview.addEventListener('scroll', evt => {
+    update(preview, editor, hintbar)
+  })
+
+  function debounce(fn, ms = 100) {
+    let debounceTimer = null;
+    return function (...args) {
+      if (debounceTimer) clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        fn.apply(this, args)
+      }, ms)
+    }
+  }
+
+  /**
+   * 我们定义一个 scrollingTarget 对象， 当它为 null 时， editor 或 preview 哪一边的scroll
+   * 先触发，我们就把scrollingTarget 设为对应的对象。当scroll事件触发时， scrollingTarget
+   * 与对应的对象相同时才会执行 update。 这样如果我们先滚动 editor，那么 scrollingTarget 
+   * 的值被设为edit， 这样就只有 editor 的滚动事件中，  update才会被触发
+   * **/
+  let scrollingTarget = null;
+  editor.addEventListener('scroll', function (evt) {
+    if (!scrollingTarget) scrollingTarget = editor;
+    if (scrollingTarget === editor) update(editor, preview, hintbar)
+  })
+
+  editor.addEventListener('scroll', debounce(function(evt) {
+    scrollingTarget = null;
+  }))
+
+  preview.addEventListener('scroll', function(evt) {
+    if(!scrollingTarget) scrollingTarget = preview;
+    if(scrollingTarget === preview) update(preview, editor, hintbar)
+  })
+</script>
+
+</html>
