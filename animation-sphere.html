@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    #sphere {
+      position: absolute;
+      left: 100px;
+      top: 100px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background-color: #0af;
+    }
+
+    #ground {
+      position: absolute;
+      top: 420px;
+      width: 600px;
+      height: 10px;
+      background-color: #000;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="sphere"></div>
+  <div id="ground"></div>
+</body>
+<script>
+  const S = 400;// 小球离地的初始高度
+  const T = 1000; //落地时间
+
+
+
+  /**
+   * @target 目标动画元素
+   * @duration 动画经历时间
+   * @progress 动画执行回调函数
+   * */
+  // function animate(target, duration, progress) {
+  //   const startTime = Date.now();
+  //   return new Promise((resolve) => {
+  //     function update() {
+  //       const t = Date.now() - startTime;
+  //       const p = Math.min(t / duration, 1);
+  //       progress(target, p);
+  //       if (p < 1) {
+  //         requestAnimationFrame(update);
+  //       } else {
+  //         resolve(p);
+  //       }
+  //     }
+  //     update();
+  //   });
+  // }
+
+  // const sphere = document.getElementById('sphere');
+
+  // animate(sphere, 1000, (target, p) => {
+  //   const top = 400 * p ** 2;
+  //   target.style.top = `${top}px`;
+  // })
+
+  // (async function() {
+  //   while(1) {
+  //     await animate(sphere, 1000, (target, p) => {
+  //       const top = 400 * p ** 2;
+  //       target.style.top = `${top}px`;
+  //     });
+
+  //     await animate(sphere,1000, (target, p) => {
+  //       // 起点400， 反向运动， 所以要用400减
+  //       const top = 400 - 400 * p * (2 - p);
+  //       target.style.top = `${top}px`;
+  //     })
+  //   }
+  // })()
+
+  // (async function () {
+  //   let height = 400;
+  //   let duration = 1000;
+
+  //   while (1) {
+  //     await animate(sphere, duration, (target, p) => {
+  //       const top = (400 - height) + height * p ** 2;
+  //       target.style.top = `${top}px`;
+  //     });
+
+  //     // 能量损耗后的动画执行高度和时间 
+  //     height *= 0.7;
+  //     duration *= Math.sqrt(0.7);
+
+  //     await animate(sphere, duration, (target, p) => {
+  //       // 起点400， 反向运动， 所以要用400减
+  //       const top = 400 - height * p * (2 - p);
+  //       target.style.top = `${top}px`;
+  //     })
+  //   }
+  // })()
+
+  /**
+   *@target 目标元素
+    @prop css属性
+    @duration 动画周期
+    @start 动画开始时，css属性的值
+    @end 动画结束时， css属性值
+    @interpolate 插值函数
+   * 
+   * **/
+  // function animate({ target, prop, duration, start, end, interpolate }) {
+  //   const startTime = Date.now();
+
+  //   return new Promise(resolve => {
+  //     function update() {
+  //       const t = Date.now() - startTime;
+  //       const p = Math.min(t / duration, 1);
+  //       target.style[prop] = interpolate(start, end, p);
+  //       if (p < 1) {
+  //         requestAnimationFrame(update)
+  //       } else {
+  //         resolve(p)
+  //       }
+  //     }
+  //     update()
+  //   })
+  // }
+
+  // const sphere = document.getElementById('sphere');
+  // animate({
+  //   target: sphere,
+  //   prop: 'top',
+  //   duration: 1000,
+  //   start: 100,
+  //   end: 400,
+  //   interpolate(start, end, p) {
+  //     p **= 2; // 匀加速
+  //     return `${start * (1 - p) + end * p}px`
+  //   }
+  // })
+
+  function animate({ target, prop, duration, start, end, easing, interpolate = {} }) {
+    const startTime = Date.now();
+
+    return new Promise(resolve => {
+      function update() {
+        const t = Date.now() - startTime;
+        const p = Math.min(t / duration, 1);
+
+        target.style[prop] = interpolate(start, end, easing ? easing(p) : p);
+        if (p < 1) {
+          requestAnimationFrame(update)
+        } else {
+          resolve(p)
+        }
+      }
+      update()
+    })
+  }
+  const sphere = document.getElementById('sphere');
+
+  function lerp(start, end, p) {
+    return start * (1 - p) + end * p;
+  }
+  // animate({
+  //   target: sphere,
+  //   prop: 'top',
+  //   duration: 1000,
+  //   start: 400,
+  //   end: 100,
+  //   easing(p) {
+  //     return p * (2 - p);
+  //   },
+  //   interpolate(start, end, p) {
+  //     return `${start * (1 - p) + end * p}px`
+  //   }
+  // })
+
+
+  animate({
+    target: sphere,
+    prop: 'top',
+    duration: 100000,
+    start: 250,
+    end: 100,
+    easing(p) {
+      return Math.sin(100 * Math.PI * p);
+    },
+    interpolate(start, end, p) {
+      return `${start * (1 - p) + end * p}px`;
+    }
+  })
+  animate({
+    target: sphere,
+    prop: 'background',
+    duration: 100000,
+    start: [0, 170, 255],
+    end: [255, 170, 0],
+    easing(p) {
+      return 100 * p % 1;
+    },
+    interpolate(start, end, p) {
+      const color = start.map((s, i) => {
+        return lerp(s, end[i], p);
+      });
+      return `rgb(${color})`
+    }
+  })
+</script>
+
+</html>
