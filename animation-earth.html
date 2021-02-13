@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .main {
+      width: 512px;
+      height: 512px;
+      position: relative;
+    }
+
+    #sun,
+    #earth {
+      position: absolute;
+    }
+
+    #sun {
+      transform: translate(-50%, -50%);
+      font-size: 5rem;
+      left: 50%;
+      top: 50%;
+    }
+
+    #earth {
+      left: 50%;
+      /* 把top值设置为父容器50%的高度，并向上偏移128px的位置 */
+      top: calc(50% - 128px);
+      /* 将地球的旋转参考点修改到太阳的中心点。这样执行地球的 transform 属性就能让地球围绕这太阳转了 */
+      transform-origin: 50% calc(50% + 128px);
+      font-size: 2rem;
+
+      transform: translate(-50%, -50%) rotate(.0turn);
+      animation: rotate 5s linear infinite;
+    }
+
+    /* 定义关键帧动画 */
+    @keyframes rotate {
+      to {
+        transform: translate(-50%, -50%) rotate(1turn)
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="main">
+    <div id="sun">🌞</div>
+    <div id="earth">🌏</div>
+  </div>
+</body>
+<script>
+  /**
+   * 1. 设计轨迹方程，找出动画变量和时间的关系
+   * 2. 确定动画周期和动画变量对应的CSS属性
+   * 3. 通过 requestAnimationFrame API，在浏览器重绘周期中更新动画变量，以实现我们需要的动画效果
+   * */
+  // const earth = document.getElementById('earth');
+  // const x0 = 256;
+  // const y0 = 256;
+  // const radius = 128;
+  // const T = 5000; // 周期
+
+  // function update(t) {
+  //   const alpha = 2 * Math.PI * t / T;
+  //   const x = x0 + radius * Math.cos(alpha);
+  //   const y = y0 + radius * Math.sin(alpha);
+  //   earth.style.left = `${x}px`;
+  //   earth.style.top = `${y}px`;
+  //   requestAnimationFrame(update)
+  // }
+
+  // update(0)
+</script>
+
+</html>
