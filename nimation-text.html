@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    #content {
+      position: relative;
+      display: inline-block;
+      padding: 5px;
+      border: solid 1px;
+      font-size: 1.5rem;
+    }
+
+    #content::after {
+      /* 
+        如果元素有border， 伪元素的高度要设为100%加上border，对应的 top 和
+        right 要设置为负的 border 宽度
+        因为动画中，文字元素时从左往右显现，所以伪元素的宽度需要从左往右缩小，所以
+        我们需要将伪元素的固定点设置在右上角或者右下角，即： top / bottom 和right属性
+        如果动画要从右往左显现， 则需要设置 top/ bottom 和 left属性；同样如果从上往下显现，
+        那么就设置left/right 和 bottom属性
+       */
+      position: absolute;
+      top: -1px;
+      right: -1px;
+      width: calc(100% + 2px);
+      height: calc(100% + 2px);
+      content: '';
+      background-color: #fff;
+      animation: slide 2s ease-in forwards;
+    }
+
+    @keyframes slide {
+      to {
+        width: 0
+      }
+    }
+
+    @keyframes fade-in {
+      to {
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="content">文字内容</div>
+</body>
+
+</html>
