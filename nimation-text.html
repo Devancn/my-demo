@@ -7,13 +7,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
   <style>
-    #content {
+    /* #content {
       position: relative;
       display: inline-block;
       padding: 5px;
       border: solid 1px;
       font-size: 1.5rem;
-    }
+    } */
 
     #content::after {
       /* 
@@ -24,16 +24,16 @@
         如果动画要从右往左显现， 则需要设置 top/ bottom 和 left属性；同样如果从上往下显现，
         那么就设置left/right 和 bottom属性
        */
-      position: absolute;
+      /* position: absolute;
       top: -1px;
       right: -1px;
       width: calc(100% + 2px);
       height: calc(100% + 2px);
       content: '';
       background-color: #fff;
-      animation: slide 2s ease-in forwards;
+      animation: slide 2s ease-in forwards; */
     }
-
+/* 
     @keyframes slide {
       to {
         width: 0
@@ -43,6 +43,27 @@
     @keyframes fade-in {
       to {
         opacity: 1;
+      }
+    } */
+
+    /* 使用clip-path属性方式 */
+    #content{
+      position: relative;
+      display: inline-block;
+      padding: 5px;
+      border: solid 1px;
+      font-size: 1.5rem;
+      /* 
+        polygon 方法裁切可是区域。这个方法接受8个参数，每两个分别表示一个点的坐标
+        四个点分别位于元素的 左上角/右上角/右下角/左下角
+       */
+      clip-path: polygon(0% 0%,0% 0%, 0% 100%, 0% 100%);
+      animation: slide 2s forwards;
+    }
+
+    @keyframes slide{
+      to {
+        clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
       }
     }
   </style>
