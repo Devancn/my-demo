@@ -76,4 +76,26 @@
     console.log(JSON.stringify(config))
   }
 
+
+  {
+    const obj = {
+      x: 1,
+      y: 2
+    }
+
+    Object.freeze(obj);
+    obj.z = 3;
+    console.log(delete obj.x)
+    obj.x = 4;
+    console.log(obj)
+  }
+
+  {
+    const obj = {
+      x: 1
+    }
+    Object.seal(obj)
+    obj.x = 2;
+    console.log(obj)
+  }
 </script>
