@@ -1,0 +1,79 @@
+<style>
+  li.selected {
+    color: red;
+  }
+</style>
+<ul>
+  <li>1</li>
+  <li>2</li>
+  <li>3</li>
+  <li>4</li>
+  <li>5</li>
+  <li>6</li>
+</ul>
+
+<script>
+  {
+    let view = new Proxy({
+      selected: null
+    },
+      {
+        set: function (target, prop, newVal) {
+          let oldVal = target[prop];
+
+          if (prop === 'selected') {
+            if (oldVal) {
+              oldVal.className = '';
+            }
+            if (newVal) {
+              newVal.className = 'selected';
+            }
+          }
+          Reflect.set(target, prop, newVal);
+          return true;
+        }
+      })
+
+    const list = document.querySelectorAll('ul li');
+    view.selected = list[1];
+
+    setTimeout(() => {
+      view.selected = list[2]
+    }, 1000)
+
+    setTimeout(() => {
+      view.selected = list[3];
+    }, 2000)
+  }
+
+  {
+    function Configure(config = {}) {
+      return new Proxy(config, {
+        get(target, key, receiver) {
+
+          //  如果key 不存在， 创建空对象并返回
+          if (!Reflect.has(target, key) && key !== 'toJSON') {
+            console.log(key, 'key')
+            const ret = { key };
+            Reflect.set(target, key, ret);
+            return new Configure(ret);
+          } else {
+            const ret = Reflect.get(target, key);
+            // 如果key 存在， 且key的值是一个对象，那么执行递归
+            if (ret && typeof ret === 'object') {
+              console.log(ret, 'ret ')
+              return new Configure(ret)
+            }
+            // 如果key存在且不是对象，直接返回key的值
+            return ret
+          }
+        }
+      })
+    }
+
+    let config = new Configure();
+    config.db.mysql = 2;
+    console.log(JSON.stringify(config))
+  }
+
+</script>
