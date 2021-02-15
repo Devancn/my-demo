@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    const sealHandler = {
+      deleteProperty(target, name) {
+        return false; // 禁止 delete 属性
+      },
+      defineProperty: function (target, name) {
+        return target; // 禁止definedProperty
+      },
+    };
+
+    const o = new Proxy(
+      {
+        x: 1,
+        y: 2,
+      },
+      sealHandler
+    );
+
+    console.log(o);
+    console.log(o.x, o.y);
+    o.z = 3;
+    console.log(o.z)
+    Object.defineProperty(o, 'z', { value: 3 })
+    // undefined
+    console.log(o.z)
+
+
+    {
+      /*
+        Object.freeze之后禁止对对象的属性进行添加、删除、修改操作
+      */
+      const obj = {
+        x: 1,
+        y: 2
+      };
+      Object.freeze(obj);
+      obj.z = 3;
+      obj.y = 4;
+      console.log(delete obj.x);
+      console.log(obj);
+    }
+
+    {
+      /*
+        Object.seal之后禁止对对象的属性添加、删除操作，但是可以进行修改
+      */
+      const obj = {
+        x: 1,
+        y: 2
+      };
+      Object.seal(obj);
+      obj.z = 3;
+      obj.y = 4;
+      console.log(delete obj.x);
+      console.log(obj);
+    }
+
+    {
+      /*
+        引擎还提供了一些内置的 Symbol 来可以改写对象内部的语义
+      */
+      const _baseUrl = Symbol('baseUrl');
+      const _paths = Symbol('paths');
+
+      class Router {
+        constructor(baseUrl = './') {
+          this[_baseUrl] = baseUrl;
+          this[_paths] = new Set();
+        }
+
+        addPath(path) {
+          this[_paths].add(path)
+        }
+
+        *[Symbol.iterator]() {
+          const baseUrl = this[_baseUrl];
+          for (let path of this[_paths]) {
+            yield `${baseUrl}/${path}`
+          }
+        }
+      }
+
+      const router = new Router('./src');
+      router.addPath('a/b');
+      router.addPath('c/d');
+      console.log([...router])
+    }
+
+    {
+      // Symbol.toStringTag
+      class Foo {
+        get [Symbol.toStringTag]() {
+          return this.constructor.name;
+        }
+      }
+
+      const foo = new Foo();
+      console.log(foo + '');
+    }
+
+    {
+      // Symbol.hasInstance
+      class A {
+        constructor() {
+
+        }
+
+        methodA() {
+          console.log('method A');
+        }
+      }
+
+      class B extends A {
+        constructor() {
+          super()
+        }
+
+        methodB() {
+          console.log('method b');
+        }
+      }
+
+      const InterfaceC = {
+        // 为了让 instanceof 方法正常处理多继承，需要使用 [Symbol.hasInstance] 方法
+        [Symbol.hasInstance](obj) {
+          console.log(obj, 'obj')
+          return obj instanceof B;
+        },
+        methodC() {
+          console.log('method C');
+        }
+      };
+
+      Object.assign(B.prototype, InterfaceC);
+
+      const b = new B();
+      b.a = 123;
+      console.log(b.a, b.b, b.methodA(), b.methodB(), b.methodC())
+
+      console.log(b instanceof B)
+      console.log(b instanceof A)
+      console.log(b instanceof InterfaceC)
+    }
+
+    {
+      /*总结：
+        Symbol 上还有许多能改变对象的语义的静态方法比如
+        Symbol.match 改变 String.prototype.match 的返回结果
+        Symbol.split、Symbol.search、Symbol.replace等等
+        Symbol.toPrimitive 能够控制对象转换成原始类型的值
+        具体看 https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Symbol
+      
+        重点：
+        显示的创建一个 Symbol 包装器对象是不被允许的比如 new Symbol，
+        实际上现有的原始包装器对象，如 new Boolean、new String、new Number在 ECMAScript 6
+        开始不再被支持，因为遗留原因仍可被创建.
+        如果真的像创建一个 包装器对象  可以使用 Object 函数
+      */
+      
+    }
+  </script>
+</body>
+
+</html>
