@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="a">
+    <span>1</span>
+    <p>2</p>
+    <p>3</p>
+    <div>4</div>
+  </div>
+</body>
+<script>
+  /*
+    把一个元素所有的子元素逆序
+  */
+  // (function () {
+  //   function reverseChildren(element) {
+  //     console.log(element, 'element');
+  //     let l = element.childNodes.length;
+  //     console.log(element.childNodes, 'element.childNodes')
+  //     while (l--) {
+  //       // 这里浏览器会不断地进行重排与重绘
+  //       element.appendChild(element.childNodes[l])
+  //     }
+  //   }
+  //   reverseChildren(document.getElementById('a'));
+  // })()
+
+
+  /**
+   *  使用 Range API方式对元素的子元素进行逆序
+   */
+  void function () {
+    let element = document.getElementById('a');
+
+    function reverseChildren(element) {
+      let range = new Range();
+      // element 中的内容被包含在 Range 中
+      range.selectNodeContents(element);
+      /**
+       * 此时 element的NodeList为空数组，被存放到摘取到 fragment 里面了
+       * DocumentFragments 是DOM节点。但不是主DOM树的一部分。文档片段存在于
+       * 内存中，并不存在DOM树种，所以将子元素插入到文档时不会引起页面回流
+       * */
+      let fragment = range.extractContents();
+      let l = fragment.childNodes.length;
+      while (l--) {
+        fragment.appendChild(fragment.childNodes[l]);
+      }
+      // 把文档片段中的内容追加到 element子节点列表的末尾处
+      element.appendChild(fragment);
+    }
+
+    reverseChildren(element);
+  }()
+</script>
+
+</html>
