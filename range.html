@@ -1,23 +1,57 @@
-<div id="a">123456789</div>
+<div id="a">123<span style="background-color: rosybrown;">456789</span>0123456789</div>
 
 <script>
-  // 这里是获取 节点a 的文本节点 123456789
-  let element = document.getElementById('a').childNodes[0];
-  console.log(element, 'element')
-  /**
-   * Range 接口表示一个包含节点与文本节点的一部分的文档片段
-   * */
+  // // 这里是获取 节点a 的文本节点 123456789
+  // let element = document.getElementById('a').childNodes[0];
+  // console.log(element, 'element')
+  // /**
+  //  * Range 接口表示一个包含节点与文本节点的一部分的文档片段
+  //  * */
+  // let range = new Range();
+  // /**
+  //  * 设置 Range 的开始位置，如果起始节点类型 Text, Comment, or CDATASection 之一，那么 startOffset 值的是
+  //  * 从起始节点算起字符的偏移量。 对于其它 Node 类型节点, startOffset 是指从起始节点开始算起子节点的偏移量。
+  //  * */
+  // range.setStart(element, 3);
+  // // 设置 Range 的结束位置
+  // range.setEnd(element, 6)
+
+  // setTimeout(() => {
+  //   // 456会从文本节点中摘除放入到文档片段中
+  //   range.extractContents();
+  // }, 1500)
+
   let range = new Range();
+  // 设置 Range 内容起点
+  const aChildren = document.getElementById('a').childNodes;
   /**
-   * 设置 Range 的开始位置，如果起始节点类型 Text, Comment, or CDATASection 之一，那么 startOffset 值的是
-   * 从起始节点算起字符的偏移量。 对于其它 Node 类型节点, startOffset 是指从起始节点开始算起子节点的偏移量。
+   * NodeList(3) [text, span, text]
+    0: text
+    1: span
+    2: text
+    length: 3
    * */
-  range.setStart(element, 3);
-  // 设置 Range 的结束位置
-  range.setEnd(element, 6)
+  console.log(aChildren, 'aChildren')
+
+ /**
+  * 这样设置无效， end 必须打与 start
+  *  range.setStart(aChildren[2], 3)
+    range.setEnd(aChildren[1].childNodes[0], 3);
+  * */
+  // range.setStart(aChildren[1].childNodes[0], 3);
+  // range.setEnd(aChildren[2], 3);
+  // setTimeout(() => {
+  //   console.log('extractContents');
+  //   range.extractContents();
+  // }, 1500)
   
+
+  /**
+   * 使用 Range 把整个 span 元素从 DOM树中摘取，但 element 面板还是能看到 span 的html 代码
+   * */
+  range.setStart(document.getElementById('a'),1);
+  range.setEnd(document.getElementById('a'),2);
   setTimeout(() => {
-    // 456会从文本节点中摘除放入到文档片段中
     range.extractContents();
-  }, 1500)
+  }, 1500);
 </script>
