@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <button id="button">按钮</button>
+</body>
+<script>
+  class Observable{
+    constructor() {
+      this.promiseQueue = [];
+      this.resolve = null;
+      this.enqueue();
+    }
+
+    enqueue() {
+      this.promiseQueue.push(new Promise(resole => {
+        this.resolve = resole
+      }))
+    }
+    dequeue() {
+      return this.promiseQueue.shift()
+    }
+    async *fromEvent(element, eventType) {
+      element.addEventListener(eventType, event => {
+        this.resolve(event);
+        this.enqueue();
+      })
+      while(1) {
+        yield this.dequeue();
+      }
+    }
+  }
+  
+  (async function() {
+    const observable = new Observable();
+    const mouseClickIterator = observable.fromEvent(button, 'click');
+    for await(const clickEvent of mouseClickIterator){
+      console.log(clickEvent, 'clickEvent');
+    }
+  })()
+</script>
+
+
+</html>
