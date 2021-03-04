@@ -1,0 +1,20 @@
+<style title="Devan">
+  a {
+    color: red;
+  }
+</style>
+<!-- href 后面是 data 协议，理论上只要是文件内容都可以写成内联的，特殊符号需要进行转译，link 标签必须要指定
+rel 属性，Link 标签的作用不止是用来引入样式
+-->
+<link rel="stylesheet" title="Hey!" href="data:text/css,p%7Bcolor:blue%7D">
+
+<script>
+  /**每个单独的 style、 link 标签都会生成一个 CSSStyleSheet
+   * 每个 CSSStyleSheet内部包含多个 cssRules 规则
+   * 0: CSSStyleSheet {ownerRule: null, cssRules: CSSRuleList, rules: CSSRuleList, type: "text/css", href: null, …}
+1: CSSStyleSheet {ownerRule: null, cssRules: CSSRuleList, rules: CSSRuleList, type: "text/css", href: "data:text/css,p%7Bcolor:blue%7D", …}
+length: 2
+   * */
+  console.log(document.styleSheets)
+
+</script>
