@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .container {
+      /* 将容器设置为弹性容器，实现两栏布局 */
+  display: flex;    
+  width: 80%;                 
+  max-width: 1000px;
+  margin: 1em auto;
+  /* 特意给容器设置高度 */
+  min-height: 100vh;   
+}                             
+
+.col-main {
+  flex: 1 80%;     
+}                        
+
+.col-sidebar {           
+  flex: 20%;          
+}
+
+.affix {
+  /* （以下2行）给侧边栏的菜单添加粘滞定位。它会停在距离视口顶部1em的位置 */
+  position: sticky;    
+  top: 1em;             
+}
+  </style>
+</head>
+<body>
+  <div class="container">        
+   <!-- 将现有的内容用col-main包起来，作为主体栏          -->
+    <main class="col-main">     
+      <nav>                              
+        <div class="dropdown">
+          <div class="dropdown-label">Main Menu</div>
+          <div class="dropdown-menu">
+            <ul class="submenu">
+              <li><a href="/">Home</a></li>
+              <li><a href="/coffees">Coffees</a></li>
+              <li><a href="/brewers">Brewers</a></li>
+              <li><a href="/specials">Specials</a></li>
+              <li><a href="/about">About us</a></li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+      <h1>Wombat Coffee Roasters</h1>
+      <h1>Wombat Coffee Roasters</h1>
+      <h1>Wombat Coffee Roasters</h1>
+      <h1>Wombat Coffee Roasters</h1>
+      <h1>Wombat Coffee Roasters</h1>
+      <h1>Wombat Coffee Roasters</h1>
+    </main>
+  
+    <aside class="col-sidebar">
+      <!-- （以下2行）加一个侧边栏，里面放一个affix元素 -->
+      <div class="affix">        
+        <ul class="submenu">        
+          <li><a href="/">Home</a></li>
+          <li><a href="/coffees">Coffees</a></li>
+          <li><a href="/brewers">Brewers</a></li>
+          <li><a href="/specials">Specials</a></li>
+          <li><a href="/about">About us</a></li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+</body>
+</html>
