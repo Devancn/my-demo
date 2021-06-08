@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <!-- 
+    一：定义模板
+    二：定义 CSS
+    三：定义 JS
+   -->
+  <template id="geekbang-t">
+    <style>
+      p {
+        background-color: brown;
+        color: coral;
+      }
+
+      div {
+        width: 200px;
+        background-color: bisque;
+        border: 3px solid chocolate;
+        border-radius: 10px;
+      }
+    </style>
+    <div id="box">
+      <p>time.geekbang.org</p>
+      <p>time1.geekbang.org</p>
+    </div>
+    <script>
+      function foo() {
+        console.log('inner log');
+      }
+    </script>
+  </template>
+
+  <div id="box1">
+    <p>time.geekbang.org</p>
+    <p>time1.geekbang.org</p>
+    <button id="button">Devan</button>
+  </div>
+  <geek-bang></geek-bang>
+  <script>
+    class GeekBang extends HTMLElement {
+      constructor() {
+        super();
+        //  创建组件模板
+        const content = document.querySelector('#geekbang-t').content;
+        //  创建影子 DOM 节点
+        const shadowDOM = this.attachShadow({ mode: 'open' });
+        // 将模板添加到影子DOM上
+        shadowDOM.appendChild(content.cloneNode(true));
+      }
+    }
+    console.log(document.getElementById('button'))
+    customElements.define('geek-bang', GeekBang)
+    
+    /**
+     * 这里不能获取到 影子 DOM 内部的节点
+     * */
+    console.log(document.getElementById('box'), 'aaa') // null
+    console.log(document.getElementById('box1'), 'bbb')
+    console.log(document.querySelector('geek-bang'))
+    
+  </script>
+
+
+</body>
+
+</html>
