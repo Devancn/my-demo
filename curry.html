@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    function add(a, b, c) {
+      return a + b + c
+    }
+    function curry(fn) {
+      const fnArgsLength = fn.length
+      const func = (...args) => {
+        if (fnArgsLength === args.length) {
+          return fn(...args)
+        } else {
+          return (...rests) => {
+            return func(...args, ...rests)
+          }
+        }
+      }
+      return func
+    }
+
+    const curried = curry(add)
+    console.log(curried(1, 2, 3))
+    console.log(curried(1, 2)(3))
+    console.log(curried(1)(2, 3))
+
+    function f1(str) {
+      return str + 1
+    }
+    function f2(str) {
+      return str + 2
+    }
+    function f3(str) {
+      return str + 3
+    }
+    function flow(...args) {
+      // console.log(args, 'args')
+      // return (...rests) => {
+      //   return args[0](args[1](args[2](...rests)))
+      // }
+      return args.reduce((acc, item) => {
+        return function(...rest) {
+          return acc(item(...rest))
+        }
+      })
+    }
+
+    const f = flow(f3, f2, f1)
+    console.log(f('Devan'))
+  </script>
+</body>
+
+</html>
