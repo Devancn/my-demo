@@ -36,7 +36,20 @@
       result.appendChild(document.createTextNode(String.fromCharCode(resultCode)))
     }, false);
 
+    const decode = ['a', 'c', 'z', 'y']
 
+    function transform(decode = []) {
+      const left = 3;
+      let codeA = 'a'.codePointAt(0);
+      return decode.map(char => {
+        const point = char.codePointAt(0);
+        const offset = (point - codeA - 3 + 26) % 26;
+        return String.fromCodePoint(codeA + offset)
+      })
+    }
+    const encode = transform(decode);
+    //  const target = ['x', 'z', 'w', 'v']
+    console.log(encode, 'encode')
   </script>
 </body>
 
