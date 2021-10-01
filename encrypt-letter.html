@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div><input placeholder="请输入字母 a - z" id="input" /></div>
+  <button id="button">改变</button>
+  <p>结果：<span id="result"></span></p>
+
+  <script>
+    let input = document.getElementById('input');
+    let button = document.getElementById('button');
+    let result = document.getElementById('result');
+
+    let base = 3;
+    let letterA = 'a'.codePointAt(0);
+    button.addEventListener('click', event => {
+      const value = input.value;
+      // 1. 获取输入字母的码点
+      let code = value.codePointAt(0)
+      // 2. 求得该字母在字母表中的序号
+      let offset = code - letterA;
+      // 2. 字母码点 + 3
+      let resultCode = letterA + (offset + base) % 26
+      // 3. 再从码点转成字母
+      while (result.childNodes.length > 0) {
+        const removeNode = result.childNodes[0];
+        result.removeChild(removeNode)
+      }
+      result.appendChild(document.createTextNode(String.fromCharCode(resultCode)))
+    }, false);
+
+
+  </script>
+</body>
+
+</html>
