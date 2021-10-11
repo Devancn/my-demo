@@ -19,11 +19,22 @@
       <li>4</li>
     </ul>
   </template>
+  <template id="script">
+    <script>
+      console.log('devan')
+    </script>
+  </template>
 </body>
 <script>
   const fooTemplate = document.getElementById('foo');
+  const scriptTemplate = document.getElementById('script');
   // fooTemplate.content 为一个 DocumentFragment节点
   console.log(fooTemplate, 'fooTemplate')
+  setTimeout(() => {
+    // console.log('devan') 会被延迟执行
+    console.log(document.body.appendChild(scriptTemplate.content))
+  }, 1500)
+
 </script>
 
 </html>
