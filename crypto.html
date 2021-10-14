@@ -1,0 +1,19 @@
+<script>
+  // 利用 crypto.getRandomValues 安全伪随机数生成，需要传入 TypeDArray 类型参数
+  const array = new Uint8Array(1); // 内部生成 1 字节 无符号二进制随机位
+  // 生成 5 个随机数 ? 第一次输出 居然 5 个一样的，后续就不同了 有点疑惑
+  for (let i = 0; i < 5; i++) {
+    console.log(crypto.getRandomValues(array))
+  }
+
+
+  function randomFloat() {
+    // 生成 32 位随机值
+    const fooArray = new Uint32Array(1);
+    // 最大值
+    const maxUint = 0xffffffff;
+    console.log(fooArray, 'fooArray')
+    return crypto.getRandomValues(fooArray)[0] / maxUint
+  }
+  console.log(randomFloat(), 'randomFloat')
+</script>
