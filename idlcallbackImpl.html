@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    let pendingCallback = null;
+    const perFrameTime = 1000 / 60;
+    let frameDiedTime = 0
+
+    const messageChanel = new MessageChannel()
+    function requestIdleCallback(callback) {
+      pendingCallback = callback;
+      requestAnimationFrame((currentTime) => {
+        console.log(currentTime,'currentTime')
+        console.log(performance.now(), 'performance.now')
+        frameDiedTime = currentTime + perFrameTime;
+        messageChanel.port1.postMessage('devan')
+      })
+    }
+
+    messageChanel.port2.onmessage = function() {
+      const timeRemaining = frameDiedTime - performance.now();
+      if(typeof pendingCallback === "function") {
+        pendingCallback({didTimeout: timeRemaining < 0,timeRemaining})
+      }
+    }
+    requestIdleCallback(function(...args) {
+      console.log(...args)
+    })
+    
+
+    let current = 0
+    function sleep(ms) {
+      current = performance.now();
+      while(performance.now() - current < ms) {}
+    }
+
+    console.log(1111)
+    sleep(25)
+    console.log(2222)
+  </script>
+</body>
+</html>
