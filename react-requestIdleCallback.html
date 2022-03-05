@@ -1,28 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
 </head>
+
 <body>
   <script>
+
+    /*
     let channel = new MessageChannel(); // 通信是产生宏任务
     let activeFrameTime = 1000 / 60; // 模拟渲染一帧所需时间
     let frameDeadline; // 帧截止时间
     let pendingCallback;
     let timeRemaining = () => frameDeadline - performance.now();
-    channel.port2.onmessage = function() {
+    channel.port2.onmessage = function () {
       let currentTime = performance.now(); // 浏览器导航之后到现在还的时间
       let didTimeout = frameDeadline <= currentTime;
-      if(didTimeout || timeRemaining() > 0) { 
-        if(pendingCallback) {
-          pendingCallback({didTimeout, timeRemaining})
+      if (didTimeout || timeRemaining() > 0) {
+        if (pendingCallback) {
+          pendingCallback({ didTimeout, timeRemaining })
         }
       }
     }
 
-    window.requestIdleCallback = function(callback, options) {
+    window.requestIdleCallback = function (callback, options) {
       requestAnimationFrame(rafTime => {
         console.log('rafTIme', rafTime); // 执行该回调的时间(这个值与performance.now()返回值相同)
         frameDeadline = rafTime + activeFrameTime;
@@ -30,6 +34,25 @@
         channel.port1.postMessage('hello');
       })
     }
+    */
+    function sleep(ms) {
+      const current = performance.now();
+      while (1) {
+        if (performance.now() - current >= ms) {
+          break
+        }
+      }
+    }
+    function idlCallback() {
+      console.log('idlCallback')
+      window.requestIdleCallback(idlCallback)
+    }
+    function rafCallback() {
+      console.log('rafCallback');
+      sleep(17)
+      window.requestAnimationFrame(rafCallback)
+    }
   </script>
 </body>
+
 </html>

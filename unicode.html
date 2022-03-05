@@ -1,6 +1,9 @@
+<body>
+  <iframe src="./web-component.html" frameborder="0"></iframe>
+</body>
 <script>
   // 根据code现实其在ASII的字符
-  for(let i = 0; i < 128; i++) {
+  for (let i = 0; i < 128; i++) {
     document.write(`<span style='background-color: lightgreen'>${i} ${String.fromCodePoint(i)}</span></br>`)
   }
   /*
@@ -10,18 +13,29 @@
   charCodeAt系列的api处理bmp范围的字符
   codePointAt系列的api可以处理bmp范围外的字符
   */
- /*
- "厉".codePointAt(0).toString(16);
- "害".codePointAt(0).toString(16);
- */
-var \u5389\u5bb3 = 123;
-console.log(厉害)
+  /*
+  "厉".codePointAt(0).toString(16);
+  "害".codePointAt(0).toString(16);
+  */
+  var \u5389\u5bb3 = 123;
+  console.log(厉害)
 
-/*
-  InputElement
-    WhiteSpace
-    LineTerminator
-    Comment
-    Token
-*/
+  /*
+    InputElement
+      WhiteSpace
+      LineTerminator
+      Comment
+      Token
+  */
+
+
+  // 把 web-component 自定的元素追加到当前文档中
+  const iframe = document.querySelector('iframe');
+  const iframeDoc = iframe.contentWindow.document;
+  const gb = iframeDoc.querySelector('geek-bang');
+
+  setTimeout(() => {
+    // iframe 同源居然也获取不到 body 的 子节点
+    console.log(iframeDoc.body.childNodes, 'nodes')
+  }, 3000)
 </script>

@@ -44,9 +44,10 @@
     <p>time1.geekbang.org</p>
     <button id="button">Devan</button>
   </div>
-  <geek-bang></geek-bang>
+  <geek-bang class="test"></geek-bang>
   <script>
     class GeekBang extends HTMLElement {
+      // 在创建元素实例或将已有 DOM 元素升级为自定义元素类的实例
       constructor() {
         super();
         //  创建组件模板
@@ -56,17 +57,54 @@
         // 将模板添加到影子DOM上
         shadowDOM.appendChild(content.cloneNode(true));
       }
+      // 在每次将这个自定义元素实例添加到 DOM 中移除时调用
+      connectedCallback(...args) {
+        console.log(this, 'connectedCallback this');
+        console.log(...args, 'connectedCallback args')
+      }
+      // 在每次将这个自定义元素实例从 DOM 中移除时调用
+      disconnectedCallback(...args) {
+        console.log(this, 'disconnectedCallback this');
+        console.log(...args, 'disconnectedCallback args')
+      }
+      // 在每次可观察属性的值发生变化时低啊用。在元素实例初始化时，初始化值的定义也算一次变化
+      attributeChangedCallback(...args) {
+        console.log(this, 'disconnectedCallback this');
+        console.log(...args, 'disconnectedCallback args')
+      }
+      // 在通过 document.adoptNode() 将这个自定义元素实例移动到新文档对象时调用
+      adoptedCallback(...args) {
+        console.log(this, 'disconnectedCallback this');
+        console.log(...args, 'disconnectedCallback args')
+      }
     }
     console.log(document.getElementById('button'))
     customElements.define('geek-bang', GeekBang)
-    
+
     /**
      * 这里不能获取到 影子 DOM 内部的节点
      * */
     console.log(document.getElementById('box'), 'aaa') // null
     console.log(document.getElementById('box1'), 'bbb')
-    console.log(document.querySelector('geek-bang'))
-    
+    const gb = document.querySelector('geek-bang');
+    const iframe = document.querySelector('iframe');
+    // setTimeout(() => {
+    //   // 将这个自定义元素实例从 DOM 中移除
+    //   console.log('1111')
+    //   document.body.removeChild(gb)
+    // }, 2000)
+    // setTimeout(() => {
+    //   console.log('22222');
+    // 这里不会触发 attributeChangedCallback 执行
+    // gb.className = 'customClass'
+    //   gb.setAttribute('className', 'customClass')
+    // }, 2000)
+    // setTimeout(() => {
+    //   const iframeBody = iframe.contentWindow.document.body
+    //   iframeBody.appendChild(gb)
+    //   console.log('22222222')
+    // }, 2000)
+
   </script>
 
 

@@ -1,13 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    em {
+      color: blue;
+    }
+  </style>
 </head>
+
 <body>
-  <!-- <div id="foo"></div>
-  <div id="bar"></div> -->
+  <!-- 
+  <div id="foo">foo</div>
+  <div id="bar">bar</div> -->
+  <name-devan>dxh_hxd</name-devan>
+  <template id="tpl">
+    <style>
+      ul {
+        background-color: cadetblue;
+      }
+
+      li {
+        background-color: darkcyan;
+      }
+
+      .em {
+        color: darkorchid;
+      }
+    </style>
+    <ul>
+      <li><em>1</em></li>
+      <li><em class="em">2</em></li>
+      <li>3</li>
+      <li>4</li>
+    </ul>
+  </template>
   <script>
     /*
     document.body.innerHTML = `
@@ -62,46 +97,59 @@
         <slot name="foo"></slot>
        `
        */
-      
-        /*
-      class FooElement extends HTMLElement {
-        constructor() {
-          super();
-          console.log('x-foo')
-        }
-      }
-   
-      customElements.define('x-foo', FooElement);
-      document.body.innerHTML = `
-       <x-foo></x-foo>
-       <x-foo></x-foo>
-       <x-foo></x-foo>
-      `
-      
-      class FooElement extends HTMLDivElement {
-        constructor() {
-          super();
-          console.log('x-foo')
-        }
-      }
-     customElements.define('x-foo', FooElement, {extends: 'div'});
-     document.body.innerHTML = `
-      <div is="x-foo"></div>
-      <div is="x-foo"></div>
-      <div is="x-foo"></div>
-     `
-     */
+
+    /*
+  class FooElement extends HTMLElement {
+    constructor() {
+      super();
+      console.log('x-foo')
+    }
+  }
+ 
+  customElements.define('x-foo', FooElement);
+  document.body.innerHTML = `
+   <x-foo></x-foo>
+   <x-foo></x-foo>
+   <x-foo></x-foo>
+  `
+  
+  class FooElement extends HTMLDivElement {
+    constructor() {
+      super();
+      console.log('x-foo')
+    }
+  }
+ customElements.define('x-foo', FooElement, {extends: 'div'});
+ document.body.innerHTML = `
+  <div is="x-foo"></div>
+  <div is="x-foo"></div>
+  <div is="x-foo"></div>
+ `
+
     class FooElement extends HTMLElement {
-      constructor (props) {
+      constructor(props) {
         super(props)
-        this.attachShadow({mode: 'open'});
+        this.attachShadow({ mode: 'open' });
         this.shadowRoot.innerHTML = `
           <p> I am inside a custom element! </p>
         `
       }
     }
     customElements.define('x-foo', FooElement)
-    document.body.innerHTML += `<x-foo></x-foo>`
+  document.body.innerHTML += `<x-foo></x-foo>` */
+    // const foo = document.getElementById('foo');
+    // foo.attachShadow({ mode: 'open' })
+    const tpl = document.getElementById('tpl')
+    class DevanHTMLElement extends HTMLElement {
+      constructor() {
+        super()
+        const shadowRoot = this.attachShadow({ mode: 'open' })
+
+        this.shadowRoot.appendChild(tpl.content.cloneNode(true))
+      }
+    }
+    customElements.define('name-devan', DevanHTMLElement)
   </script>
 </body>
+
 </html>
