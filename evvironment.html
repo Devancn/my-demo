@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    /*
+    function f() {
+      'use strict'
+      eval("var x; x = (delete x, 0);");
+      console.log(x, 'xxx')
+    }
+   
+    f()
+    */
+   /* function f() {
+      eval("var x; x = 0;");
+      console.log(x, 'x');
+      console.log(window.x, 'window.x')
+    }
+    */
+ 
+  //  function f() {
+  //    'use strict'
+  //    var x = 1;
+  //    delete x;
+  //    console.log(x)
+  //  }
+  let obj = {
+    name: 'devan',
+    hobby: 'sdfsd'
+  }
+  with (obj) {
+  
+    var name = '123'
+    console.log(name,'name');
+    console.log(obj.name, 'obj.name')
+    var age = 11;
+    console.log(age, 'age')
+    console.log(obj.age, 'obj.age');
+    delete obj.name;
+    console.log(name, 'name');
+    delete obj.hobby;
+    console.log(hobby, 'hobby')
+  }
+  
+  
+  </script>
+</body>
+</html>
