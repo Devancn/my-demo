@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <input type="file" id="file">
+  <div id="output"></div>
+  <script>
+    const fileInput = document.querySelector('[type=file]')
+    fileInput.addEventListener('change', event => {
+      // 获取 fileList
+      const [file] = event.target.files;
+      // 创建 fileReader 对象读取文件内容
+      const reader = new FileReader();
+      // load 事件为文件内容读取完成时触发
+      reader.addEventListener('load', event => {
+        console.log(event.target.result)
+      })
+      // result 中的内容为 data: url
+      reader.readAsDataURL(file)
+    })
+  </script>
+</body>
+</html>
