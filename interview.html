@@ -1,0 +1,40 @@
+<script>
+     
+  /**
+   * 笔试题：
+   * 请实现 (3).add(2).minus(2) 功能
+   * 
+   * 题目涉及到的 3 个知识点
+   * */
+
+
+   /**
+    * 1. 题目中的数组为什么要用圆括号括起来？
+    * 答：如果是 3.add(2).minus(2) 这种代码 js 引擎在
+    * 解析的时候会把 . 当做数字组成部分来进行词法解析
+    * 解析到 add 时 引擎不识别此词法，所以会报语法错误
+    * */
+  
+    /**
+     * 2. 类型隐士转换
+     * 代码 (3).add(2).minus(2) 中的 . 运算符会
+     * 把基础数据类型 3 转成对象类型
+     * 也就是运行时会产生 new Number 调用
+     * */
+
+
+     /**
+      * 3. 获取对象原始值
+      * 在了解【类型隐士转换】时会产生 new Number 调用后
+      * 所以我们只要在 Number 的原型上扩展对应的方法即可
+      * 转换成对象后可通过调用 valueOf 方法获取原始值
+      * */
+     Number.prototype.add = function(value) {
+        return this.valueOf() + value;
+     }
+     Number.prototype.minus = function(value) {
+        return this.valueOf() + value;
+     }
+
+</script>
+
